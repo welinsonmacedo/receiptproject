@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { getFirestore, collection, addDoc,getDocs } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, getDocs } from 'firebase/firestore';
 import firebaseConfig from '../services/firebaseConfig';
 import { initializeApp } from 'firebase/app';
+
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
@@ -66,15 +67,17 @@ const GenerateReceipt = () => {
     const [clientName, setClientName] = useState('');
     const [clientDocument, setClientDocument] = useState('');
     const [service, setService] = useState('');
-    const [vehicle, setVehicle] = useState([]);
-    const [user, setUser] = useState([]);
+    const [vehicle, setVehicle] = useState('');
+    const [user, setUser] = useState('');
     const [departureAddress, setDepartureAddress] = useState('');
     const [destinationAddress, setDestinationAddress] = useState('');
     const [value, setValue] = useState('');
+    const [signature, setSignature] = useState('');
     const [error, setError] = useState(null);
     const [services, setServices] = useState([]);
     const [vehicles, setVehicles] = useState([]);
     const [users, setUsers] = useState([]);
+    const [signatures, setSignatures] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -96,17 +99,31 @@ const GenerateReceipt = () => {
             setUsers(usersData);
         };
 
+        const fetchSignatures = async () => {
+            const signaturesSnapshot = await getDocs(collection(db, 'signature'));
+            const signaturesData = signaturesSnapshot.docs.map(doc => doc.data().fullName);
+            setSignatures(signaturesData);
+        };
+
         fetchServices();
         fetchVehicles();
         fetchUsers();
+        fetchSignatures();
     }, [db]);
 
     const handleGenerateReceipt = async (e) => {
         e.preventDefault();
         try {
+            // Buscar o documento do usuário com base no nome
+            const userSnapshot = await getDocs(collection(db, 'users'));
+            const selectedUser = userSnapshot.docs.find(doc => doc.data().name === user);
+            const userDocument = selectedUser ? selectedUser.data().document : '';
+
+            // Adicionar o recibo ao Firestore
             const receiptRef = await addDoc(collection(db, 'receipts'), {
                 content,
                 user,
+                userDocument,
                 vehicle,
                 clientName,
                 clientDocument,
@@ -114,10 +131,13 @@ const GenerateReceipt = () => {
                 departureAddress,
                 destinationAddress,
                 value,
+                signature,
                 createdAt: new Date()
             });
-            const receiptId = receiptRef.id
-            navigate('/receiptviewer/' + receiptId) 
+            const receiptId = receiptRef.id;
+
+            // Redirecionar para a página de visualização do recibo
+            navigate('/receiptviewer/' + receiptId);
         } catch (error) {
             setError('Erro ao gerar o recibo: ' + error.message);
         }
@@ -128,7 +148,8 @@ const GenerateReceipt = () => {
             <Title>Gerar Recibo</Title>
             <form onSubmit={handleGenerateReceipt}>
                 <FormGroup>
-                    <Label>Conteúdo:</Label>
+                   
+                <Label>Conteúdo:</Label>
                     <TextArea value={content} onChange={(e) => setContent(e.target.value)} required />
                 </FormGroup>
                 <FormGroup>
@@ -153,7 +174,7 @@ const GenerateReceipt = () => {
                     <Select value={vehicle} onChange={(e) => setVehicle(e.target.value)} required>
                         <option value="">Selecione o carro</option>
                         {vehicles.map(vehicle => (
-                            <option key={vehicle.id} value={vehicle.model}>{vehicle.model}</option>
+                            <option key={vehicle.id} value={`${vehicle.model} - ${vehicle.plate}`}>{vehicle.model} - {vehicle.plate}</option>
                         ))}
                     </Select>
                 </FormGroup>
@@ -163,6 +184,15 @@ const GenerateReceipt = () => {
                         <option value="">Selecione o usuário</option>
                         {users.map(user => (
                             <option key={user.id} value={user.name}>{user.name}</option>
+                        ))}
+                    </Select>
+                </FormGroup>
+                <FormGroup>
+                    <Label>Assinatura:</Label>
+                    <Select value={signature} onChange={(e) => setSignature(e.target.value)} required>
+                        <option value="">Selecione a assinatura</option>
+                        {signatures.map((signature, index) => (
+                            <option key={index} value={signature}>{signature}</option>
                         ))}
                     </Select>
                 </FormGroup>

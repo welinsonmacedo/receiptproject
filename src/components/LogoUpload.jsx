@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, getDocs, deleteDoc } from 'firebase/firestore';
 import firebaseConfig from '../services/firebaseConfig';
 import { initializeApp } from 'firebase/app';
 
 const firebaseApp = initializeApp(firebaseConfig);
-const storage = getStorage(firebaseApp);
 const db = getFirestore(firebaseApp);
 
 const Container = styled.div`
@@ -26,12 +24,9 @@ const LogoContainer = styled.div`
   margin-bottom: 20px;
 `;
 
-const LogoImage = styled.img`
-  max-width: 100%;
-`;
-
-const UploadInput = styled.input`
- 
+const Input = styled.input`
+  margin-bottom: 10px;
+  width: 100%;
 `;
 
 const Button = styled.button`
@@ -41,6 +36,8 @@ const Button = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 
   &:hover {
     background-color: #0056b3;
@@ -48,52 +45,57 @@ const Button = styled.button`
 `;
 
 const LogoUpload = () => {
-  const [logoURL, setLogoURL] = useState(null);
+  const [logoLink, setLogoLink] = useState('');
+  const [logos, setLogos] = useState([]);
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    const storageRef = ref(storage, `logos/${file.name}`);
-    
+  useEffect(() => {
+    const fetchLogos = async () => {
+      const logosCollection = collection(db, 'logos');
+      const logosSnapshot = await getDocs(logosCollection);
+      const logosData = logosSnapshot.docs.map(doc => ({
+        id: doc.id,
+        url: doc.data().url
+      }));
+      setLogos(logosData);
+    };
+    fetchLogos();
+  }, []);
+
+  const handleAddLogo = async () => {
     try {
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      setLogoURL(url);
-      
-      // Salvar o URL do logotipo no Firestore
-      await addDoc(collection(db, 'logos'), { url });
+      await addDoc(collection(db, 'logos'), { url: logoLink });
+      setLogoLink('');
     } catch (error) {
-      console.error('Erro ao fazer upload do logotipo:', error);
+      console.error('Erro ao adicionar a logo:', error);
     }
   };
 
-  const handleDeleteLogo = async () => {
-    const storageRef = ref(storage, 'logos/logo.png'); // Altere 'logo.png' para o nome do seu logotipo
+  const handleDeleteLogo = async (logoId) => {
     try {
-      await deleteObject(storageRef);
-      setLogoURL(null);
-      
-      // Excluir o logotipo do Firestore
-      // Implemente a exclusão do documento do Firestore conforme necessário
+      await deleteDoc(collection(db, 'logos').doc(logoId));
     } catch (error) {
-      console.error('Erro ao excluir o logotipo:', error);
+      console.error('Erro ao excluir a logo:', error);
     }
   };
 
   return (
     <Container>
-      <Title>Upload de Logotipo</Title>
-      <LogoContainer>
-        {logoURL && <LogoImage src={logoURL} alt="Logo" />}
-      </LogoContainer>
-      <label htmlFor="logoUpload">
-        <Button>Escolher Logotipo</Button>
-      </label>
-      <UploadInput type="file" id="logoUpload" onChange={handleFileChange} />
-      {logoURL && (
-        <>
-          <Button onClick={handleDeleteLogo}>Apagar Logotipo</Button>
-        </>
-      )}
+      <Title>Gerenciamento de Logotipos</Title>
+      <Input 
+        type="text" 
+        placeholder="Insira o link da logo" 
+        value={logoLink} 
+        onChange={(e) => setLogoLink(e.target.value)} 
+      />
+      <Button onClick={handleAddLogo}>Adicionar Logo</Button>
+      {logos.map(logo => (
+        <div key={logo.id}>
+          <LogoContainer>
+            <img src={logo.url} width='90px' alt="Logo" />
+          </LogoContainer>
+          <Button onClick={() => handleDeleteLogo(logo.id)}>Apagar Logo</Button>
+        </div>
+      ))}
     </Container>
   );
 };

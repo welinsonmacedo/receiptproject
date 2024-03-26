@@ -41,6 +41,7 @@ const RegisterMenu = () => {
         <MenuButton to="/createusers">Cadastrar Usuários</MenuButton>
         <MenuButton to="/createvehicles">Cadastrar Veiculos</MenuButton>
         <MenuButton to="/createservices">Cadastrar Serviços</MenuButton>
+        <MenuButton to="/signature">Assinatura</MenuButton>
         <MenuButton to="/resetpassword">Redefinir Senha</MenuButton>
         <MenuButton to="/logo">Logotipo</MenuButton>
        

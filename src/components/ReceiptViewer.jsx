@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import firebaseConfig from '../services/firebaseConfig';
 
@@ -10,6 +10,10 @@ const db = getFirestore(firebaseApp);
 
 const Container = styled.div`
   max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-align: center;
   margin: 0 auto;
   padding: 20px;
@@ -18,14 +22,24 @@ const Container = styled.div`
   margin-top: 5rem;
   font-family: Arial, sans-serif;
 `;
-
-const Title = styled.h2`
+const Main = styled.div`
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+justify-content: flex-start;
+`
+const LogoImage = styled.img`
+  border-radius: 50%;
+  max-width: 20%;
   margin-bottom: 20px;
-  text-align: center;
 `;
 
 const Field = styled.div`
   margin-bottom: 10px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 `;
 
 const Label = styled.span`
@@ -35,10 +49,30 @@ const Label = styled.span`
 const Value = styled.span`
   margin-left: 5px;
 `;
+const SubTitle = styled.h3`
 
+`
+const SubContainer = styled.div`
+display: flex;
+flex-direction: row;
+gap:20%;
+border: 2px solid gray;
+width: 100%;
+padding: 5px;
+margin-top: 10px;
+
+`
+const Signature = styled.h4`
+ font-family: "Great Vibes", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 25px;
+  margin-left: 20px;
+`
 const ReceiptViewer = () => {
   const { receiptId } = useParams();
   const [receiptData, setReceiptData] = useState({});
+  const [logoURLs, setLogoURLs] = useState([]);
 
   useEffect(() => {
     const fetchReceiptData = async () => {
@@ -56,52 +90,98 @@ const ReceiptViewer = () => {
       }
     };
 
+    const fetchLogoURLs = async () => {
+      try {
+        const logosCollection = collection(db, 'logos');
+        const logosSnapshot = await getDocs(logosCollection);
+        const urls = [];
+        logosSnapshot.forEach(doc => {
+          const logoData = doc.data();
+          if (logoData.url) {
+            urls.push(logoData.url);
+          }
+        });
+        setLogoURLs(urls);
+      } catch (error) {
+        console.error('Erro ao buscar URLs das logos:', error);
+      }
+    };
+
     fetchReceiptData();
+    fetchLogoURLs();
   }, [receiptId]);
 
   return (
     <Container>
-      <Title>Visualizar Recibo</Title>
-      <Field>
-        <Label>Nome do Cliente:</Label>
-        <Value>{receiptData.clientName}</Value>
-      </Field>
-      <Field>
-        <Label>Documento do Cliente:</Label>
-        <Value>{receiptData.clientDocument}</Value>
-      </Field>
-      <Field>
-        <Label>Conteúdo:</Label>
-        <Value>{receiptData.content}</Value>
-      </Field>
-      <Field>
-        <Label>Data de Criação:</Label>
-        <Value>{new Date(receiptData.createdAt?.seconds * 1000).toLocaleString()}</Value>
-      </Field>
-      <Field>
-        <Label>Endereço de Saída:</Label>
-        <Value>{receiptData.departureAddress}</Value>
-      </Field>
-      <Field>
-        <Label>Endereço de Destino:</Label>
-        <Value>{receiptData.destinationAddress}</Value>
-      </Field>
-      <Field>
-        <Label>Serviço:</Label>
-        <Value>{receiptData.service}</Value>
-      </Field>
-      <Field>
-        <Label>Usuário:</Label>
-        <Value>{receiptData.user}</Value>
-      </Field>
-      <Field>
-        <Label>Valor:</Label>
-        <Value>{receiptData.value}</Value>
-      </Field>
-      <Field>
-        <Label>Veículo:</Label>
-        <Value>{receiptData.vehicle}</Value>
-      </Field>
+      {logoURLs.map((url, index) => (
+        <LogoImage key={index} src={url} alt={`Logo ${index}`} />
+      ))}
+      < SubTitle>DS Viagens e Transportes</SubTitle>
+      <Main>
+        <SubContainer>
+          <Field>
+            <Label>Motorista:</Label>
+            <Value>{receiptData.user}</Value>
+          </Field>
+          <Field>
+            <Label>Doc:</Label>
+            <Value>{receiptData.userDocument}</Value>
+          </Field>
+        </SubContainer>
+        <SubContainer>
+          <Field>
+            <Label> Cliente:</Label>
+            <Value>{receiptData.clientName}</Value>
+          </Field>
+          <Field>
+            <Label>Doc:</Label>
+            <Value>{receiptData.clientDocument}</Value>
+          </Field>
+        </SubContainer>
+        <Field>
+          <Label>Conteúdo:</Label>
+          <Value>{receiptData.content}</Value>
+        </Field>
+        <Field>
+          <Label>Endereço de Saída:</Label>
+          <Value>{receiptData.departureAddress}</Value>
+        </Field>
+        <Field>
+          <Label>Endereço de Destino:</Label>
+          <Value>{receiptData.destinationAddress}</Value>
+        </Field>
+        <SubContainer>
+          <Field>
+            <Label>Serviço:</Label>
+            <Value>{receiptData.service}</Value>
+          </Field>
+
+          <Field>
+            <Label>Valor:</Label>
+            <Value>R${receiptData.value},00</Value>
+          </Field>
+        </SubContainer>
+        <SubContainer>
+          <Field>
+            <Label>Veículo:</Label>
+            <Value>{receiptData.vehicle}</Value>
+          </Field>
+        </SubContainer>
+
+
+        <Field>
+          <Label>Data de Criação:</Label>
+          <Value>{new Date(receiptData.createdAt?.seconds * 1000).toLocaleString()}</Value>
+        </Field>
+        <Field>
+          <Label>Ass:</Label>
+          <Signature>{receiptData.signature}</Signature>
+        </Field>
+
+      </Main>
+
+
+
     </Container>
   );
 };

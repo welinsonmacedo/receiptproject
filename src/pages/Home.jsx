@@ -12,6 +12,7 @@ const Container = styled.div`
   align-items: center;
   flex-direction: column;
   height: 100vh;
+  gap: 2rem;
 `;
 
 const Button = styled.button`

@@ -11,6 +11,7 @@ import GenerateReceipt from './components/GenerateReceipt';
 import ReceiptViewer from './components/ReceiptViewer';
 import ReceiptList from './components/ReceiptList';
 import LogoUpload from './components/LogoUpload';
+import AddSignature from './components/AddSignature';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/receiptviewer/:receiptId" element={<ReceiptViewer/>}/>
         <Route path="/receiptlist" element={<ReceiptList/>}/>
         <Route path="/logo" element={<LogoUpload/>}/>
+        <Route path="/signature" element={<AddSignature/>}/>
       </Routes>
 
 
