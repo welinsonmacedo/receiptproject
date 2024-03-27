@@ -12,6 +12,7 @@ import ReceiptViewer from './components/ReceiptViewer';
 import ReceiptList from './components/ReceiptList';
 import LogoUpload from './components/LogoUpload';
 import AddSignature from './components/AddSignature';
+import AdminPanel from './components/AdminPanel';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/receiptlist" element={<ReceiptList/>}/>
         <Route path="/logo" element={<LogoUpload/>}/>
         <Route path="/signature" element={<AddSignature/>}/>
+        <Route path="/paineladmin" element={<AdminPanel/>}/>
       </Routes>
 
 

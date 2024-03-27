@@ -43,6 +43,7 @@ const RegisterMenu = () => {
         <MenuButton to="/createservices">Cadastrar Serviços</MenuButton>
         <MenuButton to="/signature">Assinatura</MenuButton>
         <MenuButton to="/resetpassword">Redefinir Senha</MenuButton>
+        <MenuButton to="/paineladmin">Painel Admin</MenuButton>
         <MenuButton to="/logo">Logotipo</MenuButton>
        
       </Column>

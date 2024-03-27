@@ -9,7 +9,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
 const Container = styled.div`
-  max-width: 350px;
+  max-width: 400px;
   margin: 0 auto;
   padding: 40px;
   border: 1px solid #ccc;
@@ -22,7 +22,12 @@ const Title = styled.h2`
 `;
 
 const FormGroup = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
   margin-bottom: 20px;
+  gap: 15px;
 `;
 
 const Label = styled.label`
@@ -78,8 +83,9 @@ const AddSignature = () => {
         <FormGroup>
           <Label>Nome Completo:</Label>
           <Input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+          <Button type="submit">Cadastrar Assinatura</Button>
         </FormGroup>
-        <Button type="submit">Cadastrar Assinatura</Button>
+        
       </form>
       {error && <div>{error}</div>}
     </Container>

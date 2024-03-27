@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, getDocs,deleteDoc,doc } from 'firebase/firestore';
 import firebaseConfig from '../services/firebaseConfig';
 import { initializeApp } from 'firebase/app';
+
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
@@ -20,7 +21,18 @@ const Container = styled.div`
 const Title = styled.h2`
   margin-bottom: 20px;
 `;
-
+const ItemGroup = styled.div`
+display: flex;
+gap: 20px;
+  border: 2px solid blue ;
+  margin: 15px;
+  padding: 10px;
+  &:hover {
+    background-color: #77b390;
+    color:black;
+    font-weight: 900;
+  }
+`
 const ReceiptList = () => {
   const [receipts, setReceipts] = useState([]);
 
@@ -37,15 +49,27 @@ const ReceiptList = () => {
 
     fetchReceipts();
   }, []);
-
+  const handleDelete = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'receipts', id));
+      setReceipts(prevReceipts => prevReceipts.filter(receipt => receipt.id !== id));
+      alert('Recibo excluído com sucesso!');
+    } catch (error) {
+      console.error('Erro ao excluir recibo:', error);
+    }
+  };
   return (
     <Container>
       <Title>Lista de Recibos</Title>
       <ul>
         {receipts.map(receipt => (
           <li key={receipt.id}>
+            <ItemGroup>
             <Link to={`/receiptviewer/${receipt.id}`}>{receipt.clientName}</Link>
-            <Link to={`/receiptviewer/${receipt.id}`}>{receipt.value}</Link>
+            <Link to={`/receiptviewer/${receipt.id}`}>R$:{receipt.value},00</Link>
+            <button onClick={() => handleDelete(receipt.id)}><img src="delete.png" width="15px"/></button>
+            </ItemGroup>
+           
           </li>
         ))}
       </ul>

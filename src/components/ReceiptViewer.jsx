@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import firebaseConfig from '../services/firebaseConfig';
+
+import { WhatsappShareButton } from 'react-share'; // Componente para compartilhar via WhatsApp
+
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
@@ -23,10 +26,10 @@ const Container = styled.div`
   font-family: Arial, sans-serif;
 `;
 const Main = styled.div`
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-justify-content: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
 `
 const LogoImage = styled.img`
   border-radius: 50%;
@@ -53,26 +56,31 @@ const SubTitle = styled.h3`
 
 `
 const SubContainer = styled.div`
-display: flex;
-flex-direction: row;
-gap:20%;
-border: 2px solid gray;
-width: 100%;
-padding: 5px;
-margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  gap:20%;
+  border: 2px solid gray;
+  width: 100%;
+  padding: 5px;
+  margin-top: 10px;
 
 `
 const Signature = styled.h4`
- font-family: "Great Vibes", cursive;
+  font-family: "Great Vibes", cursive;
   font-weight: 400;
   font-style: normal;
   font-size: 25px;
   margin-left: 20px;
 `
+
+
+
+
 const ReceiptViewer = () => {
   const { receiptId } = useParams();
   const [receiptData, setReceiptData] = useState({});
   const [logoURLs, setLogoURLs] = useState([]);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const fetchReceiptData = async () => {
@@ -103,7 +111,7 @@ const ReceiptViewer = () => {
         });
         setLogoURLs(urls);
       } catch (error) {
-        console.error('Erro ao buscar URLs das logos:', error);
+        console.error('Erro ao buscar URLs das logos: ', error);
       }
     };
 
@@ -111,13 +119,33 @@ const ReceiptViewer = () => {
     fetchLogoURLs();
   }, [receiptId]);
 
+  const handleShareWhatsApp = () => {
+    if (navigator.share) {
+      // Se o navegador suportar o método navigator.share
+      navigator.share({
+        title: 'Recibo',
+        text: 'Confira este recibo:',
+        url: window.location.href
+      })
+      .then(() => console.log('Conteúdo compartilhado com sucesso'))
+      .catch((error) => console.error('Erro ao compartilhar conteúdo:', error));
+    } else {
+      // Se o navegador não suportar o método navigator.share
+      console.log('O navegador não suporta o compartilhamento via WhatsApp');
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <Container>
+    <Container ref={containerRef}>
       {logoURLs.map((url, index) => (
         <LogoImage key={index} src={url} alt={`Logo ${index}`} />
       ))}
       < SubTitle>DS Viagens e Transportes</SubTitle>
-      <Main>
+      <Main >
         <SubContainer>
           <Field>
             <Label>Motorista:</Label>
@@ -180,8 +208,11 @@ const ReceiptViewer = () => {
 
       </Main>
 
-
-
+      <button onClick={handlePrint}>Imprimir</button>
+      <WhatsappShareButton url={window.location.href} onClick={handleShareWhatsApp} title="Recibo">
+        Compartilhar via WhatsApp
+      </WhatsappShareButton>
+    
     </Container>
   );
 };

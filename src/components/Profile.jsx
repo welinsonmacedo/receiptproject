@@ -20,7 +20,7 @@ const Profile = () => {
     <ProfileContainer>
       <h2>Perfil do Usuário</h2>
       <RegisterMenu/>
-      <AdminPanel/>
+      
       <UserEmail />
       <LogoutButton />
     </ProfileContainer>

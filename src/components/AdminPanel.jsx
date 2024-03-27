@@ -8,7 +8,8 @@ const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
 const Container = styled.div`
-  max-width: 800px;
+text-align: center;
+  max-width: 500px;
   margin: 0 auto;
   padding: 20px;
 `;
@@ -16,7 +17,10 @@ const Container = styled.div`
 const Title = styled.h2`
   margin-bottom: 20px;
 `;
-
+const TitleCell = styled.h3`
+ 
+  color: blue;
+`;
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -26,11 +30,13 @@ const TableRow = styled.tr`
   &:nth-child(even) {
     background-color: #f2f2f2;
   }
+  margin-bottom: 10px;
 `;
 
 const TableCell = styled.td`
   padding: 10px;
   border: 1px solid #ddd;
+
 `;
 
 const Button = styled.button`
@@ -47,7 +53,7 @@ const AdminPanel = () => {
   const [vehicles, setVehicles] = useState([]);
   const [services, setServices] = useState([]);
   const [users, setUsers] = useState([]);
-
+  const [signatures ,setSignatures]= useState([])
   useEffect(() => {
     const fetchItems = async () => {
       const vehiclesSnapshot = await getDocs(collection(db, 'vehicles'));
@@ -61,6 +67,9 @@ const AdminPanel = () => {
       const usersSnapshot = await getDocs(collection(db, 'users'));
       const usersData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setUsers(usersData);
+      const signaturesSnapshot = await getDocs(collection(db, 'signature'));
+      const signaturesData = signaturesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setSignatures(signaturesData);
     };
 
     fetchItems();
@@ -86,47 +95,98 @@ const AdminPanel = () => {
 
   return (
     <Container>
-      <Title>Admin Panel</Title>
-      <Table>
-        <thead>
-          <TableRow>
-            <TableCell>Veículos</TableCell>
-            <TableCell>Serviços</TableCell>
-            <TableCell>Usuários</TableCell>
-          </TableRow>
-        </thead>
-        <tbody>
-          <TableRow>
+    <Title>Admin Panel</Title>
+    <Table>
+      <thead>
+        <TableRow>
+          <TitleCell>Veículos</TitleCell>
+        </TableRow>
+      </thead>
+      <tbody>
+        {vehicles.map(vehicle => (
+          <TableRow key={vehicle.id}>
             <TableCell>
-              {vehicles.map(vehicle => (
-                <div key={vehicle.id}>
-                  {vehicle.brand} {vehicle.model} ({vehicle.plate})
-                  <Button onClick={() => handleDelete('vehicles', vehicle.id)}>{<img src='delete.png' width={'15px'}/>}</Button>
-                </div>
-              ))}
-            </TableCell>
-            <TableCell>
-              {services.map(service => (
-                <div key={service.id}>
-                  {service.name} - {service.description}
-                  <Button onClick={() => handleDelete('services', service.id)}>{<img src='delete.png' width={'15px'}/>}</Button>
-                </div>
-              ))}
-            </TableCell>
-            <TableCell>
-              {users.map(user => (
-                <div key={user.id}>
-                  {user.name} - {user.document}
-                 
-                  <Button onClick={() => handleDelete('users', user.id)}>{<img src='delete.png' width={'15px'}/>}</Button>
-                </div>
-              ))}
+              <div>
+                {vehicle.brand} {vehicle.model} ({vehicle.plate})
+                <Button onClick={() => handleDelete('vehicles', vehicle.id)}>
+                  <img src='delete.png' width={'15px'}/>
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
-        </tbody>
-      </Table>
-    </Container>
-  );
+        ))}
+      </tbody>
+    </Table>
+
+    <Table>
+      <thead>
+        <TableRow>
+          <TitleCell>Serviços</TitleCell>
+        </TableRow>
+      </thead>
+      <tbody>
+        {services.map(service => (
+          <TableRow key={service.id}>
+            <TableCell>
+              <div>
+                {service.name} - {service.description}
+                <Button onClick={() => handleDelete('services', service.id)}>
+                  <img src='delete.png' width={'15px'}/>
+                </Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        ))}
+      </tbody>
+    </Table>
+
+    <Table>
+      <thead>
+        <TableRow>
+          <TitleCell>Usuários</TitleCell>
+        </TableRow>
+      </thead>
+      <tbody>
+        {users.map(user => (
+          <TableRow key={user.id}>
+            <TableCell>
+              <div>
+                {user.name} - {user.document}
+                <Button onClick={() => handleDelete('users', user.id)}>
+                  <img src='delete.png' width={'15px'}/>
+                </Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        ))}
+      </tbody>
+    </Table>
+
+    <Table>
+      <thead>
+        <TableRow>
+          <TitleCell>Assinaturas</TitleCell>
+        </TableRow>
+      </thead>
+      <tbody>
+        {signatures.map(signature => (
+          <TableRow key={signature.id}>
+            <TableCell>
+              <div>
+                {signature.fullName}
+                <Button onClick={() => handleDelete('signatures', signature.id)}>
+                  <img src='delete.png' width={'15px'}/>
+                </Button>
+              </div>
+            </TableCell>
+          </TableRow>
+        ))}
+      </tbody>
+    </Table>
+  </Container>
+);
 };
+
+
 
 export default AdminPanel;
