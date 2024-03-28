@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { Link } from 'react-router-dom';
+import { Link} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
   max-width: 400px;
@@ -71,12 +72,14 @@ const ErrorMessage = styled.div`
   margin-top: 10px;
 `;
 
-const Login = () => {
+const Login = ({ setAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const auth = getAuth();
+  const navigate = useNavigate();
+
   const validarEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
@@ -88,13 +91,12 @@ const Login = () => {
     } else {
       signInWithEmailAndPassword(auth, email, senha)
         .then((userCredential) => {
-          
           setError(null);
           console.log('Usuário logado:', userCredential.user);
-          window.location.href = '/home';
+          setAuthenticated(true); // Chame setAuthenticated diretamente
+          navigate('/home');
         })
         .catch((error) => {
-          // Ocorreu um erro ao fazer login
           setError('Erro ao fazer login: ' + error.message);
         });
     }

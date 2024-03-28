@@ -82,63 +82,63 @@ const ReceiptViewer = () => {
   const [logoURLs, setLogoURLs] = useState([]);
   const containerRef = useRef(null);
 
-  useEffect(() => {
-    const fetchReceiptData = async () => {
-      try {
-        const receiptDocRef = doc(db, 'receipts', receiptId);
-        const receiptDocSnapshot = await getDoc(receiptDocRef);
-        if (receiptDocSnapshot.exists()) {
-          const receiptData = receiptDocSnapshot.data();
-          setReceiptData(receiptData);
-        } else {
-          console.log('O recibo não foi encontrado.');
-        }
-      } catch (error) {
-        console.error('Erro ao buscar dados do recibo:', error);
-      }
-    };
 
-    const fetchLogoURLs = async () => {
-      try {
-        const logosCollection = collection(db, 'logos');
-        const logosSnapshot = await getDocs(logosCollection);
-        const urls = [];
-        logosSnapshot.forEach(doc => {
-          const logoData = doc.data();
-          if (logoData.url) {
-            urls.push(logoData.url);
+  
+    useEffect(() => {
+      const fetchReceiptData = async () => {
+        try {
+          const receiptDocRef = doc(db, 'receipts', receiptId);
+          const receiptDocSnapshot = await getDoc(receiptDocRef);
+          if (receiptDocSnapshot.exists()) {
+            const receiptData = receiptDocSnapshot.data();
+            setReceiptData(receiptData);
+          } else {
+            console.log('O recibo não foi encontrado.');
           }
-        });
-        setLogoURLs(urls);
-      } catch (error) {
-        console.error('Erro ao buscar URLs das logos: ', error);
+        } catch (error) {
+          console.error('Erro ao buscar dados do recibo:', error);
+        }
+      };
+  
+      const fetchLogoURLs = async () => {
+        try {
+          const logosCollection = collection(db, 'logos');
+          const logosSnapshot = await getDocs(logosCollection);
+          const urls = [];
+          logosSnapshot.forEach(doc => {
+            const logoData = doc.data();
+            if (logoData.url) {
+              urls.push(logoData.url);
+            }
+          });
+          setLogoURLs(urls);
+        } catch (error) {
+          console.error('Erro ao buscar URLs das logos: ', error);
+        }
+      };
+  
+      fetchReceiptData();
+      fetchLogoURLs();
+    }, [receiptId]);
+  
+    const handleShareWhatsApp = () => {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Recibo',
+          text: 'Confira este recibo:',
+          url: window.location.href
+        })
+        .then(() => console.log('Conteúdo compartilhado com sucesso'))
+        .catch((error) => console.error('Erro ao compartilhar conteúdo:', error));
+      } else {
+        console.log('O navegador não suporta o compartilhamento via WhatsApp');
       }
     };
-
-    fetchReceiptData();
-    fetchLogoURLs();
-  }, [receiptId]);
-
-  const handleShareWhatsApp = () => {
-    if (navigator.share) {
-      // Se o navegador suportar o método navigator.share
-      navigator.share({
-        title: 'Recibo',
-        text: 'Confira este recibo:',
-        url: window.location.href
-      })
-      .then(() => console.log('Conteúdo compartilhado com sucesso'))
-      .catch((error) => console.error('Erro ao compartilhar conteúdo:', error));
-    } else {
-      // Se o navegador não suportar o método navigator.share
-      console.log('O navegador não suporta o compartilhamento via WhatsApp');
-    }
-  };
-
-  const handlePrint = () => {
-    window.print();
-  };
-
+  
+    const handlePrint = () => {
+      window.print();
+    };
+  
   return (
     <Container ref={containerRef}>
       {logoURLs.map((url, index) => (
@@ -209,7 +209,13 @@ const ReceiptViewer = () => {
       </Main>
 
       <button onClick={handlePrint}>Imprimir</button>
-      <WhatsappShareButton url={window.location.href} onClick={handleShareWhatsApp} title="Recibo">
+      <WhatsappShareButton
+        url={window.location.href}
+        onClick={handleShareWhatsApp}
+        title="Recibo"
+        separator=" - "
+        image={logoURLs[0]} // Adicione a URL da imagem aqui
+      >
         Compartilhar via WhatsApp
       </WhatsappShareButton>
     

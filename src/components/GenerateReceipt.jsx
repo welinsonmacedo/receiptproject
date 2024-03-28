@@ -149,7 +149,7 @@ const GenerateReceipt = () => {
             <form onSubmit={handleGenerateReceipt}>
                 <FormGroup>
                    
-                <Label>Conteúdo:</Label>
+                <Label>Descrição:</Label>
                     <TextArea value={content} onChange={(e) => setContent(e.target.value)} required />
                 </FormGroup>
                 <FormGroup>
