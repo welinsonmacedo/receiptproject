@@ -33,15 +33,15 @@ const Home = () => {
  
 
   useEffect(() => {
-    // Verifica se o usuário está autenticado ao carregar a página
+  
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (!user) {
-        // Se o usuário não estiver autenticado, redireciona para a tela de login
+     
         window.location.href ='/';
       }
     });
 
-    // Cancela a inscrição ao desmontar o componente para evitar vazamentos de memória
+   
     return () => unsubscribe();
   }, []);
 

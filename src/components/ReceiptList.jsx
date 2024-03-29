@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { getFirestore, collection, getDocs, deleteDoc, doc, where, query } from 'firebase/firestore';
 import firebaseConfig from '../services/firebaseConfig';
 import { initializeApp } from 'firebase/app';
-import { auth } from '../services/firebaseAuth'; // Importe o serviço de autenticação do Firebase
+import { auth } from '../services/firebaseAuth'; 
 import CloseComponent from './CloseComponent';
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -42,13 +42,13 @@ const ReceiptList = () => {
   useEffect(() => {
     const fetchReceipts = async () => {
       try {
-        // Obtenha o UID do usuário atual
+      
         const currentUser = auth.currentUser;
         if (!currentUser) {
           throw new Error('Nenhum usuário autenticado encontrado.');
         }
         
-        // Consulta para buscar recibos com base no UID do usuário
+
         const receiptsQuery = query(collection(db, 'receipts'), where('userId', '==', currentUser.uid));
         const receiptsSnapshot = await getDocs(receiptsQuery);
         const receiptsData = receiptsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -59,7 +59,7 @@ const ReceiptList = () => {
     };
 
     fetchReceipts();
-  }, [db]); // Certifique-se de incluir db como uma dependência para que o useEffect seja reexecutado quando db for alterado
+  }, [db]); 
 
   const handleDelete = async (id) => {
     try {

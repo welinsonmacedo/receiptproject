@@ -64,13 +64,12 @@ const AddSignature = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-// Verifica se o campo de nome completo está vazio
+
 const isFullNameEmpty = fullName.trim() === '';
 
-// Desabilita o campo de entrada da imagem se o campo de nome estiver preenchido
+
 const isSignatureImgDisabled = !isFullNameEmpty;
 
-// Verifica se o campo de link da imagem da assinatura está vazio
 const isSignatureImgEmpty = signatureImg.trim() === '';
 
 const isFullNameEmptyDisabled = !isSignatureImgEmpty
@@ -78,10 +77,10 @@ const isFullNameEmptyDisabled = !isSignatureImgEmpty
   const handleAddSignature = async (e) => {
     e.preventDefault();
     try {
-      // Obtenha o ID do usuário atual
+
       const userId = auth.currentUser.uid;
 
-      // Adicionar a assinatura ao Firestore
+
       await addDoc(collection(db, 'signature'), {
         fullName,
         signatureImg,
@@ -89,7 +88,7 @@ const isFullNameEmptyDisabled = !isSignatureImgEmpty
         userId,
       });
 
-      // Redirecionar para a página de sucesso após adicionar a assinatura
+   
       navigate('/success');
     } catch (error) {
       setError('Erro ao adicionar a assinatura: ' + error.message);
@@ -112,7 +111,7 @@ const isFullNameEmptyDisabled = !isSignatureImgEmpty
             value={signatureImg}
             onChange={(e) => setSignatureImg(e.target.value)}
             required
-            disabled={isSignatureImgDisabled} // Desabilita o campo se o nome estiver preenchido
+            disabled={isSignatureImgDisabled}
           />
         </FormGroup>
         <p>Somente e Possivel Cadastrar ou em Texto ou Img ('img fundo transparente')</p>

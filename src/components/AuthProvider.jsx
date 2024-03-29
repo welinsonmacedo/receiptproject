@@ -8,7 +8,7 @@ const AuthProvider = ({ children }) => {
   const [userId, setUserId] = useState(null);
   const auth = getAuth();
 
-  // Verifica se o usuário está autenticado ao carregar a página
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setAuthenticated(true);

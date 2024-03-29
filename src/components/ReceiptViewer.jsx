@@ -96,17 +96,17 @@ const ReceiptViewer = () => {
   const [receiptData, setReceiptData] = useState({});
   const [logoURLs, setLogoURLs] = useState([]);
   const containerRef = useRef(null);
-  const [currentUserUID, setCurrentUserUID] = useState(null); // Estado para armazenar o UID do usuário atual
+  const [currentUserUID, setCurrentUserUID] = useState(null); 
 
   useEffect(() => {
-    const auth = getAuth(); // Obter a instância de autenticação
+    const auth = getAuth(); 
 
-    // Adicionar um observador para o estado de autenticação do usuário
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        setCurrentUserUID(user.uid); // Definir o UID do usuário atual
+        setCurrentUserUID(user.uid);
       } else {
-        setCurrentUserUID(null); // Se não houver usuário autenticado, definir como null
+        setCurrentUserUID(null); 
       }
     });
 
@@ -148,10 +148,10 @@ const ReceiptViewer = () => {
 
   const handleDownloadPNG = async () => {
     try {
-      // Converta o conteúdo da tag Container para uma imagem PNG
+      
       const dataUrl = await toPng(containerRef.current);
 
-      // Crie um link temporário para fazer o download da imagem
+     
       const link = document.createElement('a');
       link.download = 'recibo.png';
       link.href = dataUrl;

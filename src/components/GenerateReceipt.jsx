@@ -92,25 +92,24 @@ const GenerateReceipt = () => {
 
                 const userUID = currentUser.uid;
 
-                // Consulta para buscar serviços do usuário atual
+               
                 const servicesQuery = query(collection(db, 'services'), where('userId', '==', userUID));
                 const servicesSnapshot = await getDocs(servicesQuery);
                 const servicesData = servicesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setServices(servicesData);
 
-                // Consulta para buscar veículos do usuário atual
                 const vehiclesQuery = query(collection(db, 'vehicles'), where('userId', '==', userUID));
                 const vehiclesSnapshot = await getDocs(vehiclesQuery);
                 const vehiclesData = vehiclesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setVehicles(vehiclesData);
 
-                // Consulta para buscar usuários do usuário atual
+             
                 const usersQuery = query(collection(db, 'users'), where('userId', '==', userUID));
                 const usersSnapshot = await getDocs(usersQuery);
                 const usersData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setUsers(usersData);
 
-                // Consulta para buscar assinaturas do usuário atual
+               
                 const signaturesQuery = query(collection(db, 'signature'), where('userId', '==', userUID));
                 const signaturesSnapshot = await getDocs(signaturesQuery);
                 const signaturesData = signaturesSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
@@ -133,7 +132,7 @@ const GenerateReceipt = () => {
 
             const userUID = currentUser.uid;
 
-            // Adicionar o recibo ao Firestore
+          
             const receiptRef = await addDoc(collection(db, 'receipts'), {
                 content,
                 user,
@@ -146,12 +145,12 @@ const GenerateReceipt = () => {
                 destinationAddress,
                 value,
                 signature,
-                userId: userUID, // Adiciona o UID do usuário ao recibo
+                userId: userUID, 
                 createdAt: new Date()
             });
             const receiptId = receiptRef.id;
 
-            // Redirecionar para a página de visualização do recibo
+            
             navigate('/receiptviewer/' + receiptId);
         } catch (error) {
             setError('Erro ao gerar o recibo: ' + error.message);

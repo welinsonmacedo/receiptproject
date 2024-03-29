@@ -63,25 +63,24 @@ const AdminPanel = () => {
           throw new Error('Nenhum usuário autenticado encontrado.');
         }
 
-        // Consulta para buscar veículos do usuário atual
+   
         const vehiclesQuery = query(collection(db, 'vehicles'), where('userId', '==', currentUser.uid));
         const vehiclesSnapshot = await getDocs(vehiclesQuery);
         const vehiclesData = vehiclesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setVehicles(vehiclesData);
 
-        // Consulta para buscar serviços do usuário atual
         const servicesQuery = query(collection(db, 'services'), where('userId', '==', currentUser.uid));
         const servicesSnapshot = await getDocs(servicesQuery);
         const servicesData = servicesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setServices(servicesData);
 
-        // Consulta para buscar usuários do usuário atual
+       
         const usersQuery = query(collection(db, 'users'), where('userId', '==', currentUser.uid));
         const usersSnapshot = await getDocs(usersQuery);
         const usersData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setUsers(usersData);
 
-        // Consulta para buscar assinaturas do usuário atual
+     
         const signaturesQuery = query(collection(db, 'signature'), where('userId', '==', currentUser.uid));
         const signaturesSnapshot = await getDocs(signaturesQuery);
         const signaturesData = signaturesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));

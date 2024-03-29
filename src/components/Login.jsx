@@ -93,7 +93,7 @@ const Login = ({ setAuthenticated }) => {
         .then((userCredential) => {
           setError(null);
           console.log('Usuário logado:', userCredential.user);
-          setAuthenticated(true); // Chame setAuthenticated diretamente
+          setAuthenticated(true);
           navigate('/home');
         })
         .catch((error) => {

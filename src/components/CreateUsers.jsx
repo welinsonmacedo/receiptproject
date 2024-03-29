@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import firebaseConfig from '../services/firebaseConfig';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
-import { auth } from '../services/firebaseAuth'; // Importe a instância de autenticação do Firebase
+import { auth } from '../services/firebaseAuth'; 
 import CloseComponent from './CloseComponent';
 
-// Inicialize o Firebase
+
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
@@ -60,16 +60,16 @@ const CreateUsers = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const currentUser = auth.currentUser; // Obter o usuário atualmente autenticado
+      const currentUser = auth.currentUser; 
       if (!currentUser) {
         throw new Error('Nenhum usuário autenticado encontrado.');
       }
 
-      // Adicionar o UID do usuário ao documento do usuário
+
       await addDoc(collection(db, 'users'), {
         name,
         document,
-        userId: currentUser.uid // Salvar o UID do usuário junto com os dados do usuário
+        userId: currentUser.uid 
       });
 
       setName('');

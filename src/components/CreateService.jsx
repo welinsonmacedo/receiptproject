@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { auth } from '../services/firebaseAuth'; // Importe a instância de autenticação do Firebase
+import { auth } from '../services/firebaseAuth'; 
 import firebaseConfig from '../services/firebaseConfig';
 import CloseComponent from './CloseComponent';
 
-// Inicialize o Firebase
+
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
@@ -60,27 +60,27 @@ const CreateService = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const currentUser = auth.currentUser; // Obter o usuário atualmente autenticado
+      const currentUser = auth.currentUser; 
       if (!currentUser) {
         throw new Error('Nenhum usuário autenticado encontrado.');
       }
 
-      // Adicionar o serviço ao Firestore com o UID do usuário
+     
       await addDoc(collection(db, 'services'), {
         name,
         description,
-        userId: currentUser.uid // Salvar o UID do usuário junto com os dados do serviço
+        userId: currentUser.uid 
       });
 
-      // Limpar os campos do formulário e resetar o erro
+     
       setName('');
       setDescription('');
       setError(null);
 
-      // Exibir uma mensagem de sucesso
+      
       alert('Serviço cadastrado com sucesso!');
     } catch (error) {
-      // Em caso de erro, definir a mensagem de erro para exibir no componente
+      
       setError('Erro ao cadastrar serviço: ' + error.message);
     }
   };

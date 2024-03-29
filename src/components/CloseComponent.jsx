@@ -16,9 +16,9 @@ const CloseComponent = ({ onClose }) => {
 
   const handleClose = () => {
     if (onClose) {
-      onClose(); // Chama a função onClose fornecida pelo componente pai
+      onClose(); 
     } else {
-      navigate('/home'); // Navega de volta para o menu se não houver uma função onClose
+      navigate('/home'); 
     }
   };
 

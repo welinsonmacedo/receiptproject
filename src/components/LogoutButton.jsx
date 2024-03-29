@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { auth } from '../services/firebaseAuth';
 
-// Estilos usando styled-components
+
 const LogoutButtonStyled = styled.button`
   padding: 10px 20px;
   background-color: #f44336;

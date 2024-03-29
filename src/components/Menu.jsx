@@ -42,9 +42,9 @@ const Menu = () => {
         <MenuButton to="/profile">Profile</MenuButton>
         <MenuButton to="/receiptlist">Historico de Recibos</MenuButton>
        
-        {/* Adicione mais botões de menu conforme necessário */}
+     
       </Column>
-      {/* Adicione mais colunas de menu conforme necessário */}
+    
     </MenuContainer>
   );
 };
