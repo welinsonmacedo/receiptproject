@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
+import { getAuth, onAuthStateChanged } from 'firebase/auth'; // Importar a função onAuthStateChanged
 import firebaseConfig from '../services/firebaseConfig';
 import { toPng } from 'html-to-image';
 
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
-
 
 const Container = styled.div`
   max-width: 100%;
@@ -26,17 +26,22 @@ const Container = styled.div`
   margin-top: 5rem;
   font-family: Arial, sans-serif;
 `;
+
 const Main = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   justify-content: flex-start;
-  max-width: 90%;
-`
+  align-items: flex-start;
+  width: 100%;
+  background-color: #fff;
+`;
+
 const LogoImage = styled.img`
   border-radius: 50%;
   max-width: 10%;
   margin-bottom: 20px;
+  display: block;
+  margin: 0 auto;
 `;
 
 const Field = styled.div`
@@ -46,6 +51,7 @@ const Field = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  width: 100%;
 `;
 
 const Label = styled.span`
@@ -55,39 +61,55 @@ const Label = styled.span`
 
 const Value = styled.span`
   margin: 10px;
-  color:#000;
+  color: #000;
 `;
-const SubTitle = styled.h3`
-color: #c0b8b8;
 
-`
+const SubTitle = styled.h3`
+  color: #c0b8b8;
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+`;
+
 const SubContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap:20%;
   border: 2px solid #e9e0e0;
   width: 100%;
   padding: 5px;
   margin-top: 10px;
+`;
 
-`
 const Signature = styled.h4`
   font-family: "Great Vibes", cursive;
   font-weight: 100;
   font-style: normal;
   font-size: 29px;
-display: block;
-margin: 0 auto;
-`
-
+  display: block;
+  margin: 0 auto;
+  margin-top: 20px;
+  text-align: center;
+`;
 
 const ReceiptViewer = () => {
   const { receiptId } = useParams();
   const [receiptData, setReceiptData] = useState({});
   const [logoURLs, setLogoURLs] = useState([]);
   const containerRef = useRef(null);
+  const [currentUserUID, setCurrentUserUID] = useState(null); // Estado para armazenar o UID do usuário atual
 
   useEffect(() => {
+    const auth = getAuth(); // Obter a instância de autenticação
+
+    // Adicionar um observador para o estado de autenticação do usuário
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCurrentUserUID(user.uid); // Definir o UID do usuário atual
+      } else {
+        setCurrentUserUID(null); // Se não houver usuário autenticado, definir como null
+      }
+    });
+
     const fetchReceiptData = async () => {
       try {
         const receiptDocRef = doc(db, 'receipts', receiptId);
@@ -139,13 +161,22 @@ const ReceiptViewer = () => {
     }
   };
 
+  if (receiptData.userId !== currentUserUID) {
+    return <Container>Você não tem permissão para visualizar este recibo.</Container>;
+  }
+  function isImageURL(url) {
+    return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
+  }
+
   return (
-    <Container ref={containerRef}>
-      {logoURLs.map((url, index) => (
-        <LogoImage key={index} src={url} alt={`Logo ${index}`} />
-      ))}
-      < SubTitle>DS Viagens e Transportes</SubTitle>
-      <Main >
+    <Container>
+    
+      <Main ref={containerRef}>
+        {logoURLs.map((url, index) => (
+          <LogoImage key={index} src={url} alt={`Logo ${index}`} />
+        ))}
+       
+        <SubTitle>DS Viagens e Transportes</SubTitle>
         <SubContainer>
           <Field>
             <Label>Motorista:</Label>
@@ -158,7 +189,7 @@ const ReceiptViewer = () => {
         </SubContainer>
         <SubContainer>
           <Field>
-            <Label> Cliente:</Label>
+            <Label>Cliente:</Label>
             <Value>{receiptData.clientName}</Value>
           </Field>
           <Field>
@@ -172,7 +203,6 @@ const ReceiptViewer = () => {
             <Value>{receiptData.content}</Value>
           </Field>
         </SubContainer>
-
         <SubContainer>
           <Field>
             <Label>Endereço de Saída:</Label>
@@ -183,14 +213,11 @@ const ReceiptViewer = () => {
             <Value>{receiptData.destinationAddress}</Value>
           </Field>
         </SubContainer>
-
         <SubContainer>
           <Field>
             <Label>Serviço:</Label>
             <Value>{receiptData.service}</Value>
           </Field>
-
-
         </SubContainer>
         <SubContainer>
           <Field>
@@ -204,23 +231,22 @@ const ReceiptViewer = () => {
             <Value>{receiptData.vehicle}</Value>
           </Field>
         </SubContainer>
-
-
+        <Field>
+        <Value>
+          {isImageURL(receiptData.signature) ? (
+            <img src={receiptData.signature} width={90} alt="Assinatura" />
+          ) : (
+            <Signature>{receiptData.signature}</Signature>
+          )}
+        </Value>
+        </Field>
+       
         <Field>
           <Label>Data de Criação:</Label>
           <Value>{new Date(receiptData.createdAt?.seconds * 1000).toLocaleString()}</Value>
         </Field>
-       
-         
-          <Signature>{receiptData.signature}</Signature>
-        
-
       </Main>
-
-      <button onClick={handleDownloadPNG}>
-        Baixar Recibo em PNG
-      </button>
-
+      <button onClick={handleDownloadPNG}>Baixar Recibo em PNG</button>
     </Container>
   );
 };

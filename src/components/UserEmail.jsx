@@ -26,12 +26,25 @@ const FooterText = styled.p`
   color: #666;
 `;
 
+const StatusText = styled.p`
+  font-size: 16px;
+  color: ${({ authenticated }) => (authenticated ? 'green' : 'red')};
+`;
+
 const UserEmail = () => {
   const user = auth.currentUser;
+  const isAuthenticated = user !== null;
 
   return (
     <Container>
-      {user && <EmailText>{user.email}</EmailText>}
+      {user && (
+        <>
+          <EmailText>{user.email}</EmailText>
+          <StatusText authenticated={isAuthenticated}>
+            {isAuthenticated ? 'Autenticado' : 'Não autenticado'}
+          </StatusText>
+        </>
+      )}
       <FooterText>Desenvolvido por Welinson Macedo 2024</FooterText>
     </Container>
   );

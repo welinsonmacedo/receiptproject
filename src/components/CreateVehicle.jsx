@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
-import firebaseConfig from '../services/firebaseConfig';
 import { initializeApp } from 'firebase/app';
+import { auth } from '../services/firebaseAuth'; // Importe a instância de autenticação do Firebase
+import CloseComponent from './CloseComponent';
+import firebaseConfig from '../services/firebaseConfig';
 
+// Inicialize o Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
 
@@ -36,7 +39,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
- width: 96%;
+  width: 96%;
   padding: 10px;
   background-color: #007bff;
   color: #fff;
@@ -59,25 +62,38 @@ const CreateVehicle = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const currentUser = auth.currentUser; // Obter o usuário atualmente autenticado
+      if (!currentUser) {
+        throw new Error('Nenhum usuário autenticado encontrado.');
+      }
+
+      // Adicionar o veículo ao Firestore com o UID do usuário
       await addDoc(collection(db, 'vehicles'), {
         brand,
         model,
         color,
-        plate
+        plate,
+        userId: currentUser.uid // Salvar o UID do usuário junto com os dados do veículo
       });
+
+      // Limpar os campos do formulário e resetar o erro
       setBrand('');
       setModel('');
       setColor('');
       setPlate('');
       setError(null);
+
+      // Exibir uma mensagem de sucesso
       alert('Veículo cadastrado com sucesso!');
     } catch (error) {
+      // Em caso de erro, definir a mensagem de erro para exibir no componente
       setError('Erro ao cadastrar veículo: ' + error.message);
     }
   };
 
   return (
     <Container>
+      <CloseComponent />
       <Title>Cadastrar Veículo</Title>
       <form onSubmit={handleSubmit}>
         <FormGroup>

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { getFirestore, collection, addDoc, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, getDocs, where, query } from 'firebase/firestore';
 import firebaseConfig from '../services/firebaseConfig';
 import { initializeApp } from 'firebase/app';
+import { auth } from '../services/firebaseAuth';
+import CloseComponent from './CloseComponent';
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
@@ -81,49 +83,61 @@ const GenerateReceipt = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchServices = async () => {
-            const servicesSnapshot = await getDocs(collection(db, 'services'));
-            const servicesData = servicesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setServices(servicesData);
+        const fetchItems = async () => {
+            try {
+                const currentUser = auth.currentUser;
+                if (!currentUser) {
+                    throw new Error('Nenhum usuário autenticado encontrado.');
+                }
+
+                const userUID = currentUser.uid;
+
+                // Consulta para buscar serviços do usuário atual
+                const servicesQuery = query(collection(db, 'services'), where('userId', '==', userUID));
+                const servicesSnapshot = await getDocs(servicesQuery);
+                const servicesData = servicesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setServices(servicesData);
+
+                // Consulta para buscar veículos do usuário atual
+                const vehiclesQuery = query(collection(db, 'vehicles'), where('userId', '==', userUID));
+                const vehiclesSnapshot = await getDocs(vehiclesQuery);
+                const vehiclesData = vehiclesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setVehicles(vehiclesData);
+
+                // Consulta para buscar usuários do usuário atual
+                const usersQuery = query(collection(db, 'users'), where('userId', '==', userUID));
+                const usersSnapshot = await getDocs(usersQuery);
+                const usersData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setUsers(usersData);
+
+                // Consulta para buscar assinaturas do usuário atual
+                const signaturesQuery = query(collection(db, 'signature'), where('userId', '==', userUID));
+                const signaturesSnapshot = await getDocs(signaturesQuery);
+                const signaturesData = signaturesSnapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+                setSignatures(signaturesData);
+            } catch (error) {
+                console.error('Erro ao buscar documentos:', error);
+            }
         };
 
-        const fetchVehicles = async () => {
-            const vehiclesSnapshot = await getDocs(collection(db, 'vehicles'));
-            const vehiclesData = vehiclesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setVehicles(vehiclesData);
-        };
-
-        const fetchUsers = async () => {
-            const usersSnapshot = await getDocs(collection(db, 'users'));
-            const usersData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setUsers(usersData);
-        };
-
-        const fetchSignatures = async () => {
-            const signaturesSnapshot = await getDocs(collection(db, 'signature'));
-            const signaturesData = signaturesSnapshot.docs.map(doc => doc.data().fullName);
-            setSignatures(signaturesData);
-        };
-
-        fetchServices();
-        fetchVehicles();
-        fetchUsers();
-        fetchSignatures();
+        fetchItems();
     }, [db]);
 
     const handleGenerateReceipt = async (e) => {
         e.preventDefault();
         try {
-            // Buscar o documento do usuário com base no nome
-            const userSnapshot = await getDocs(collection(db, 'users'));
-            const selectedUser = userSnapshot.docs.find(doc => doc.data().name === user);
-            const userDocument = selectedUser ? selectedUser.data().document : '';
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                throw new Error('Nenhum usuário autenticado encontrado.');
+            }
+
+            const userUID = currentUser.uid;
 
             // Adicionar o recibo ao Firestore
             const receiptRef = await addDoc(collection(db, 'receipts'), {
                 content,
                 user,
-                userDocument,
+                userDocument: clientDocument,
                 vehicle,
                 clientName,
                 clientDocument,
@@ -132,6 +146,7 @@ const GenerateReceipt = () => {
                 destinationAddress,
                 value,
                 signature,
+                userId: userUID, // Adiciona o UID do usuário ao recibo
                 createdAt: new Date()
             });
             const receiptId = receiptRef.id;
@@ -145,6 +160,7 @@ const GenerateReceipt = () => {
 
     return (
         <Container>
+            <CloseComponent/>
             <Title>Gerar Recibo</Title>
             <form onSubmit={handleGenerateReceipt}>
                 <FormGroup>
@@ -192,7 +208,7 @@ const GenerateReceipt = () => {
                     <Select value={signature} onChange={(e) => setSignature(e.target.value)} required>
                         <option value="">Selecione a assinatura</option>
                         {signatures.map((signature, index) => (
-                            <option key={index} value={signature}>{signature}</option>
+                           <option key={index} value={signature.signatureImg}>{signature.signatureImg} - {signature.fullName}</option>
                         ))}
                     </Select>
                 </FormGroup>

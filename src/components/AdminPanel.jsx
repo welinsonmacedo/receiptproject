@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { getFirestore, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, deleteDoc, doc, where, query } from 'firebase/firestore';
 import firebaseConfig from '../services/firebaseConfig';
+import { auth } from '../services/firebaseAuth';
 import { initializeApp } from 'firebase/app';
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -56,20 +57,38 @@ const AdminPanel = () => {
   const [signatures ,setSignatures]= useState([])
   useEffect(() => {
     const fetchItems = async () => {
-      const vehiclesSnapshot = await getDocs(collection(db, 'vehicles'));
-      const vehiclesData = vehiclesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setVehicles(vehiclesData);
+      try {
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+          throw new Error('Nenhum usuário autenticado encontrado.');
+        }
 
-      const servicesSnapshot = await getDocs(collection(db, 'services'));
-      const servicesData = servicesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setServices(servicesData);
+        // Consulta para buscar veículos do usuário atual
+        const vehiclesQuery = query(collection(db, 'vehicles'), where('userId', '==', currentUser.uid));
+        const vehiclesSnapshot = await getDocs(vehiclesQuery);
+        const vehiclesData = vehiclesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setVehicles(vehiclesData);
 
-      const usersSnapshot = await getDocs(collection(db, 'users'));
-      const usersData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setUsers(usersData);
-      const signaturesSnapshot = await getDocs(collection(db, 'signature'));
-      const signaturesData = signaturesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setSignatures(signaturesData);
+        // Consulta para buscar serviços do usuário atual
+        const servicesQuery = query(collection(db, 'services'), where('userId', '==', currentUser.uid));
+        const servicesSnapshot = await getDocs(servicesQuery);
+        const servicesData = servicesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setServices(servicesData);
+
+        // Consulta para buscar usuários do usuário atual
+        const usersQuery = query(collection(db, 'users'), where('userId', '==', currentUser.uid));
+        const usersSnapshot = await getDocs(usersQuery);
+        const usersData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setUsers(usersData);
+
+        // Consulta para buscar assinaturas do usuário atual
+        const signaturesQuery = query(collection(db, 'signature'), where('userId', '==', currentUser.uid));
+        const signaturesSnapshot = await getDocs(signaturesQuery);
+        const signaturesData = signaturesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setSignatures(signaturesData);
+      } catch (error) {
+        console.error('Erro ao buscar documentos:', error);
+      }
     };
 
     fetchItems();
@@ -165,7 +184,7 @@ const AdminPanel = () => {
     <Table>
       <thead>
         <TableRow>
-          <TitleCell>Assinaturas</TitleCell>
+          <TitleCell>Assinaturas </TitleCell>
         </TableRow>
       </thead>
       <tbody>
@@ -174,11 +193,36 @@ const AdminPanel = () => {
             <TableCell>
               <div>
                 {signature.fullName}
-                <Button onClick={() => handleDelete('signatures', signature.id)}>
+              
+                <Button onClick={() => handleDelete('signature', signature.id)}>
                   <img src='delete.png' width={'15px'}/>
                 </Button>
               </div>
             </TableCell>
+            
+          </TableRow>
+        ))}
+      </tbody>
+    </Table>
+    <Table>
+      <thead>
+        <TableRow>
+          <TitleCell>Assinaturas Imgs</TitleCell>
+        </TableRow>
+      </thead>
+      <tbody>
+        {signatures.map(signature => (
+          <TableRow key={signature.id}>
+            <TableCell>
+              <div>
+               
+                <img src={signature.signatureImg} alt="Assinatura" />
+                <Button onClick={() => handleDelete('signature', signature.id)}>
+                  <img src='delete.png' width={'15px'}/>
+                </Button>
+              </div>
+            </TableCell>
+            
           </TableRow>
         ))}
       </tbody>

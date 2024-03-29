@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import firebaseConfig from '../services/firebaseConfig';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { auth } from '../services/firebaseAuth'; // Importe a instância de autenticação do Firebase
+import CloseComponent from './CloseComponent';
 
 // Inicialize o Firebase
 const firebaseApp = initializeApp(firebaseConfig);
@@ -58,10 +60,18 @@ const CreateUsers = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const currentUser = auth.currentUser; // Obter o usuário atualmente autenticado
+      if (!currentUser) {
+        throw new Error('Nenhum usuário autenticado encontrado.');
+      }
+
+      // Adicionar o UID do usuário ao documento do usuário
       await addDoc(collection(db, 'users'), {
         name,
-        document
+        document,
+        userId: currentUser.uid // Salvar o UID do usuário junto com os dados do usuário
       });
+
       setName('');
       setDocument('');
       setError(null);
@@ -73,6 +83,7 @@ const CreateUsers = () => {
 
   return (
     <Container>
+      <CloseComponent/>
       <Title>Cadastrar Usuário</Title>
       <form onSubmit={handleSubmit}>
         <FormGroup>
@@ -80,8 +91,9 @@ const CreateUsers = () => {
           <Input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
         </FormGroup>
         <FormGroup>
-          <Label>Documento:</Label>
-          <Input type="text" value={document} onChange={(e) => setDocument(e.target.value)} required />
+          <Label>Documento: Cpf/Cnpj</Label>
+          <Input type="text" value={document} onChange={(e) => setDocument(e.target.value)}  pattern="[0-9]{11,14}"  required />
+          <p>Min.11 digitos Max.14 digitos</p>
         </FormGroup>
         <Button type="submit">Cadastrar</Button>
       </form>

@@ -6,6 +6,7 @@ import RegisterMenu from './RegisterMenu';
 import CreateUser from './CreateUsers';
 import CreateVehicle from './CreateVehicle';
 import AdminPanel from './AdminPanel';
+import CloseComponent from './CloseComponent';
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -18,9 +19,11 @@ const ProfileContainer = styled.div`
 const Profile = () => {
   return (
     <ProfileContainer>
+     
       <h2>Perfil do Usuário</h2>
+ 
       <RegisterMenu/>
-      
+      <CloseComponent/>
       <UserEmail />
       <LogoutButton />
     </ProfileContainer>
