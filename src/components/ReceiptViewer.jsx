@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import firebaseConfig from '../services/firebaseConfig';
-import { toPng } from 'html-to-image'; 
+import { toPng } from 'html-to-image';
 
 
 const firebaseApp = initializeApp(firebaseConfig);
@@ -21,7 +21,7 @@ const Container = styled.div`
   text-align: center;
   margin: 0 auto;
   padding: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #e9dfdf8d;
   border-radius: 5px;
   margin-top: 5rem;
   font-family: Arial, sans-serif;
@@ -31,6 +31,7 @@ const Main = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+  max-width: 90%;
 `
 const LogoImage = styled.img`
   border-radius: 50%;
@@ -42,25 +43,29 @@ const Field = styled.div`
   margin-bottom: 10px;
   margin-top: 10px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: flex-start;
 `;
 
 const Label = styled.span`
   font-weight: bold;
+  color: #918585;
 `;
 
 const Value = styled.span`
-  margin-left: 5px;
+  margin: 10px;
+  color:#000;
 `;
 const SubTitle = styled.h3`
+color: #c0b8b8;
 
 `
 const SubContainer = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap:20%;
-  border: 2px solid gray;
+  border: 2px solid #e9e0e0;
   width: 100%;
   padding: 5px;
   margin-top: 10px;
@@ -68,10 +73,11 @@ const SubContainer = styled.div`
 `
 const Signature = styled.h4`
   font-family: "Great Vibes", cursive;
-  font-weight: 400;
+  font-weight: 100;
   font-style: normal;
-  font-size: 25px;
-  margin-left: 20px;
+  font-size: 29px;
+display: block;
+margin: 0 auto;
 `
 
 
@@ -122,7 +128,7 @@ const ReceiptViewer = () => {
     try {
       // Converta o conteúdo da tag Container para uma imagem PNG
       const dataUrl = await toPng(containerRef.current);
-      
+
       // Crie um link temporário para fazer o download da imagem
       const link = document.createElement('a');
       link.download = 'recibo.png';
@@ -160,24 +166,33 @@ const ReceiptViewer = () => {
             <Value>{receiptData.clientDocument}</Value>
           </Field>
         </SubContainer>
-        <Field>
-          <Label>Conteúdo:</Label>
-          <Value>{receiptData.content}</Value>
-        </Field>
-        <Field>
-          <Label>Endereço de Saída:</Label>
-          <Value>{receiptData.departureAddress}</Value>
-        </Field>
-        <Field>
-          <Label>Endereço de Destino:</Label>
-          <Value>{receiptData.destinationAddress}</Value>
-        </Field>
+        <SubContainer>
+          <Field>
+            <Label>Descrição:</Label>
+            <Value>{receiptData.content}</Value>
+          </Field>
+        </SubContainer>
+
+        <SubContainer>
+          <Field>
+            <Label>Endereço de Saída:</Label>
+            <Value>{receiptData.departureAddress}</Value>
+          </Field>
+          <Field>
+            <Label>Endereço de Destino:</Label>
+            <Value>{receiptData.destinationAddress}</Value>
+          </Field>
+        </SubContainer>
+
         <SubContainer>
           <Field>
             <Label>Serviço:</Label>
             <Value>{receiptData.service}</Value>
           </Field>
 
+
+        </SubContainer>
+        <SubContainer>
           <Field>
             <Label>Valor:</Label>
             <Value>R${receiptData.value},00</Value>
@@ -195,17 +210,17 @@ const ReceiptViewer = () => {
           <Label>Data de Criação:</Label>
           <Value>{new Date(receiptData.createdAt?.seconds * 1000).toLocaleString()}</Value>
         </Field>
-        <Field>
-          <Label>Ass:</Label>
+       
+         
           <Signature>{receiptData.signature}</Signature>
-        </Field>
+        
 
       </Main>
 
       <button onClick={handleDownloadPNG}>
         Baixar Recibo em PNG
       </button>
-    
+
     </Container>
   );
 };
