@@ -48,9 +48,9 @@ const Field = styled.div`
   margin-bottom: 10px;
   margin-top: 10px;
   display: flex;
-  flex-direction: column;
+  flex-direction:row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   width: 100%;
 `;
 
