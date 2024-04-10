@@ -13,7 +13,7 @@ const db = getFirestore(firebaseApp);
 
 const Container = styled.div`
   max-width: 100%;
-  background-color: #fff;
+  background-color: #F9F9F9;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -32,9 +32,9 @@ const Main = styled.main`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  width: 80%;
+  width: 90%;
   height: 100%;
-  background-color: #fff;
+  background-color: #F9F9F9;
   padding: 2rem;
 `;
 
@@ -53,6 +53,7 @@ const Field = styled.div`
   flex-direction:column;
   align-items: flex-start;
   justify-content: flex-start;
+  width: 100%;
 `;
 
 const FieldAndress = styled.div`
@@ -62,6 +63,7 @@ const FieldAndress = styled.div`
   flex-direction:column;
   align-items: flex-start;
   justify-content: flex-start;
+  width: 100%;
 `;
 
 const Label = styled.span`
@@ -73,7 +75,7 @@ const Label = styled.span`
 const Value = styled.span`
   margin: 10px;
   color: #000;
-  font-size: 16px;
+  font-size: 13px;
 `;
 
 const SubTitle = styled.h3`
@@ -92,7 +94,7 @@ const SubContainer = styled.div`
   width: 100%;
   padding: 5px;
   margin-top: 10px;
-  padding-left: 1rem;
+  
 `;
 
 const Signature = styled.h4`
