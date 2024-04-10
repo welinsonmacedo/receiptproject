@@ -6,6 +6,7 @@ import firebaseConfig from '../services/firebaseConfig';
 import { initializeApp } from 'firebase/app';
 import { auth } from '../services/firebaseAuth'; 
 import CloseComponent from './CloseComponent';
+import Menu from './Menu';
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
@@ -72,6 +73,8 @@ const ReceiptList = () => {
   };
 
   return (
+    <>
+   <Menu/>
     <Container>
       <CloseComponent/>
       <Title>Lista de Recibos</Title>
@@ -84,6 +87,7 @@ const ReceiptList = () => {
         </ItemGroup>
       ))}
     </Container>
+    </>
   );
 };
 

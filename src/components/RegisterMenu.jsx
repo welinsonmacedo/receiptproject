@@ -38,13 +38,13 @@ const RegisterMenu = () => {
   return (
     <MenuContainer>
       <Column>
-        <MenuButton to="/createusers">Cadastrar Usuários</MenuButton>
+        <MenuButton to="/createusers">Cadastrar Motoristas</MenuButton>
         <MenuButton to="/createvehicles">Cadastrar Veiculos</MenuButton>
         <MenuButton to="/createservices">Cadastrar Serviços</MenuButton>
-        <MenuButton to="/signature">Assinatura</MenuButton>
+       
         <MenuButton to="/resetpassword">Redefinir Senha</MenuButton>
         <MenuButton to="/paineladmin">Painel Admin</MenuButton>
-        <MenuButton to="/logo">Logotipo</MenuButton>
+        
        
       </Column>
    

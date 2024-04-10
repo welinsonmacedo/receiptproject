@@ -1,51 +1,95 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import LogoutButton from './LogoutButton';
 
-const MenuContainer = styled.div`
+const NavbarContainer = styled.nav`
+  background-color: #333;
+  padding: 10px;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
 `;
 
-const Column = styled.div`
+const NavMenu = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 20px;
-  width: 200px;
+  @media (max-width: 768px) {
+    display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background-color: #333;
+    padding: 10px;
+  }
 `;
 
-const MenuButton = styled(Link)`
+const NavItem = styled(Link)`
   padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #007bff;
   color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
   text-decoration: none;
-  margin-bottom: 10px;
-  width: 100%;
-  font-weight: 900;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #555;
+  }
+
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+`;
+
+const Brand = styled(Link)`
+  color: #fff;
+  font-size: 1.2rem;
+  text-decoration: none;
+  font-weight: bold;
+`;
+
+const NavToggle = styled.div`
+  display: none;
+  cursor: pointer;
+  @media (max-width: 768px) {
+    display: block;
   }
 `;
 
 const Menu = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
-    <MenuContainer>
-      <Column>
-        <MenuButton to="/generatereceipt">Gerar Recibo</MenuButton>
-        <MenuButton to="/profile">Profile</MenuButton>
-        <MenuButton to="/receiptlist">Historico de Recibos</MenuButton>
-       
-     
-      </Column>
-    
-    </MenuContainer>
+    <NavbarContainer>
+      <Brand to="/"> <img src="profile.png" alt="Icone-perfil" /></Brand>
+      <NavToggle onClick={toggleMenu}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#fff"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
+      </NavToggle>
+      <NavMenu isOpen={isOpen}>
+        <NavItem to="/generatereceipt" onClick={toggleMenu}>Gerar Recibo</NavItem>
+        <NavItem to="/profile" onClick={toggleMenu}>Profile</NavItem>
+        <NavItem to="/receiptlist" onClick={toggleMenu}>Recibos</NavItem>
+        <LogoutButton onClick={toggleMenu} />
+      </NavMenu>
+    </NavbarContainer>
   );
 };
 

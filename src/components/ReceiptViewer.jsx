@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged } from 'firebase/auth'; // Importar a função onAuthStateChanged
+import { getAuth, onAuthStateChanged } from 'firebase/auth'; 
 import firebaseConfig from '../services/firebaseConfig';
 import { toPng } from 'html-to-image';
 
@@ -27,13 +27,15 @@ const Container = styled.div`
   font-family: Arial, sans-serif;
 `;
 
-const Main = styled.div`
+const Main = styled.main`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  width: 100%;
+  width: 80%;
+  height: 100%;
   background-color: #fff;
+  padding: 2rem;
 `;
 
 const LogoImage = styled.img`
@@ -51,7 +53,16 @@ const Field = styled.div`
   flex-direction:row;
   align-items: center;
   justify-content: center;
-  width: 100%;
+ 
+`;
+const FieldAndress = styled.div`
+  margin-bottom: 10px;
+  margin-top: 10px;
+  display: flex;
+  flex-direction:column;
+  align-items: center;
+  justify-content: center;
+ 
 `;
 
 const Label = styled.span`
@@ -73,7 +84,9 @@ const SubTitle = styled.h3`
 
 const SubContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
   border: 2px solid #e9e0e0;
   width: 100%;
   padding: 5px;
@@ -96,17 +109,17 @@ const ReceiptViewer = () => {
   const [receiptData, setReceiptData] = useState({});
   const [logoURLs, setLogoURLs] = useState([]);
   const containerRef = useRef(null);
-  const [currentUserUID, setCurrentUserUID] = useState(null); 
+  const [currentUserUID, setCurrentUserUID] = useState(null);
 
   useEffect(() => {
-    const auth = getAuth(); 
+    const auth = getAuth();
 
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setCurrentUserUID(user.uid);
       } else {
-        setCurrentUserUID(null); 
+        setCurrentUserUID(null);
       }
     });
 
@@ -125,35 +138,26 @@ const ReceiptViewer = () => {
       }
     };
 
-    const fetchLogoURLs = async () => {
-      try {
-        const logosCollection = collection(db, 'logos');
-        const logosSnapshot = await getDocs(logosCollection);
-        const urls = [];
-        logosSnapshot.forEach(doc => {
-          const logoData = doc.data();
-          if (logoData.url) {
-            urls.push(logoData.url);
-          }
-        });
-        setLogoURLs(urls);
-      } catch (error) {
-        console.error('Erro ao buscar URLs das logos: ', error);
-      }
-    };
+    const logo = 'https://r2.easyimg.io/9daixyqos/imagem_do_whatsapp_de_2024-03-24_%C3%A0(s)_20.37.08_3ac2c238.jpg'
+    setLogoURLs([logo]);
+   
 
     fetchReceiptData();
-    fetchLogoURLs();
+    
   }, [receiptId]);
 
+
+  
+
+ 
   const handleDownloadPNG = async () => {
     try {
-      
+
       const dataUrl = await toPng(containerRef.current);
 
-     
+
       const link = document.createElement('a');
-      link.download = 'recibo.png';
+      link.download = (receiptData.clientName)+'.png';
       link.href = dataUrl;
       link.click();
     } catch (error) {
@@ -170,12 +174,12 @@ const ReceiptViewer = () => {
 
   return (
     <Container>
-    
+
       <Main ref={containerRef}>
-        {logoURLs.map((url, index) => (
-          <LogoImage key={index} src={url} alt={`Logo ${index}`} />
-        ))}
+        
+          <LogoImage  src={logoURLs} alt='Logo '/>
        
+
         <SubTitle>DS Viagens e Transportes</SubTitle>
         <SubContainer>
           <Field>
@@ -204,14 +208,18 @@ const ReceiptViewer = () => {
           </Field>
         </SubContainer>
         <SubContainer>
-          <Field>
+          <FieldAndress>
             <Label>Endereço de Saída:</Label>
             <Value>{receiptData.departureAddress}</Value>
-          </Field>
-          <Field>
+          </FieldAndress>
+        </SubContainer>
+        <SubContainer>
+          <FieldAndress>
             <Label>Endereço de Destino:</Label>
             <Value>{receiptData.destinationAddress}</Value>
-          </Field>
+          </FieldAndress>
+
+
         </SubContainer>
         <SubContainer>
           <Field>
@@ -231,22 +239,32 @@ const ReceiptViewer = () => {
             <Value>{receiptData.vehicle}</Value>
           </Field>
         </SubContainer>
-        <Field>
-        <Value>
-          {isImageURL(receiptData.signature) ? (
-            <img src={receiptData.signature} width={90} alt="Assinatura" />
-          ) : (
-            <Signature>{receiptData.signature}</Signature>
-          )}
-        </Value>
-        </Field>
+        <SubContainer>
+          <FieldAndress>
+          <Label>Assinatura:</Label>
+            
+              
+             
+                <img src="/ass.jpg" alt="" width='125px' />
+              
+          
+          </FieldAndress>
+          </SubContainer>
+          <SubContainer>
+          <Field>
+            <Label>Data de Criação:</Label>
+            <Value>{new Date(receiptData.createdAt?.seconds * 1000).toLocaleString()}</Value>
+          </Field>
+          </SubContainer>
+          
        
-        <Field>
-          <Label>Data de Criação:</Label>
-          <Value>{new Date(receiptData.createdAt?.seconds * 1000).toLocaleString()}</Value>
-        </Field>
+
+
+
       </Main>
       <button onClick={handleDownloadPNG}>Baixar Recibo em PNG</button>
+     
+
     </Container>
   );
 };

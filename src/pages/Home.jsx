@@ -9,25 +9,19 @@ import Menu from '../components/Menu';
 const Container = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
   flex-direction: column;
-  height: 100vh;
-  gap: 2rem;
+ 
 `;
 
-const Button = styled.button`
-  padding: 10px 20px;
-  font-size: 1rem;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #0056b3;
-  }
+const Image = styled.img`
+width: 100%;
+image-rendering: auto;
+object-fit: cover;
+display: block;
+margin: 0 auto;
+ 
 `;
+
 
 const Home = () => {
  
@@ -48,9 +42,9 @@ const Home = () => {
   return (
     <Container>
         <Menu/>
-      <UserEmail></UserEmail>
-      <img src="profile.png" alt="Icone-perfil" />
-      <LogoutButton/>
+     
+     <Image src="home.png" alt="" />
+     
     </Container>
   );
 };

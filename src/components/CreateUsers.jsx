@@ -92,7 +92,7 @@ const CreateUsers = () => {
         </FormGroup>
         <FormGroup>
           <Label>Documento: Cpf/Cnpj</Label>
-          <Input type="text" value={document} onChange={(e) => setDocument(e.target.value)}  pattern="[0-9]{11,14}"  required />
+          <Input type="text" value={document} onChange={(e) => setDocument(e.target.value)}    required />
           <p>Min.11 digitos Max.14 digitos</p>
         </FormGroup>
         <Button type="submit">Cadastrar</Button>

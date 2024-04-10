@@ -19,6 +19,7 @@ import AdminPanel from './components/AdminPanel';
 import firebaseConfig from './services/firebaseConfig';
 import AuthProvider from './components/AuthProvider';
 
+
 // Inicialize o app do Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
@@ -49,8 +50,11 @@ function App() {
 
   return (
     <Router>
+      
       <AuthProvider>
+     
         <Routes>
+          
           <Route exact path="/" element={<Login setAuthenticated={setAuthenticated} />} />
           <Route path="/createuser" element={<CreateUser />} />
           <Route path="/resetpassword" element={<ResetPassword />} />

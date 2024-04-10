@@ -161,7 +161,7 @@ const AdminPanel = () => {
     <Table>
       <thead>
         <TableRow>
-          <TitleCell>Usuários</TitleCell>
+          <TitleCell>Motorista</TitleCell>
         </TableRow>
       </thead>
       <tbody>
@@ -180,52 +180,7 @@ const AdminPanel = () => {
       </tbody>
     </Table>
 
-    <Table>
-      <thead>
-        <TableRow>
-          <TitleCell>Assinaturas </TitleCell>
-        </TableRow>
-      </thead>
-      <tbody>
-        {signatures.map(signature => (
-          <TableRow key={signature.id}>
-            <TableCell>
-              <div>
-                {signature.fullName}
-              
-                <Button onClick={() => handleDelete('signature', signature.id)}>
-                  <img src='delete.png' width={'15px'}/>
-                </Button>
-              </div>
-            </TableCell>
-            
-          </TableRow>
-        ))}
-      </tbody>
-    </Table>
-    <Table>
-      <thead>
-        <TableRow>
-          <TitleCell>Assinaturas Imgs</TitleCell>
-        </TableRow>
-      </thead>
-      <tbody>
-        {signatures.map(signature => (
-          <TableRow key={signature.id}>
-            <TableCell>
-              <div>
-               
-                <img src={signature.signatureImg} alt="Assinatura" />
-                <Button onClick={() => handleDelete('signature', signature.id)}>
-                  <img src='delete.png' width={'15px'}/>
-                </Button>
-              </div>
-            </TableCell>
-            
-          </TableRow>
-        ))}
-      </tbody>
-    </Table>
+   
   </Container>
 );
 };

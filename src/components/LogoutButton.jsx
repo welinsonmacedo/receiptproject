@@ -4,7 +4,7 @@ import { auth } from '../services/firebaseAuth';
 
 
 const LogoutButtonStyled = styled.button`
-  padding: 10px 20px;
+  padding: 5px 7px;
   background-color: #f44336;
   color: #fff;
   border: none;
@@ -30,7 +30,7 @@ const LogoutButton = () => {
   };
 
   return (
-    <LogoutButtonStyled onClick={handleLogout}>Logout</LogoutButtonStyled>
+    <LogoutButtonStyled onClick={handleLogout}>X</LogoutButtonStyled>
   );
 };
 
