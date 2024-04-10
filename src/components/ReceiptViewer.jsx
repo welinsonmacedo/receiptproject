@@ -64,6 +64,7 @@ const FieldAndress = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   width: 100%;
+  background-color: #F9F9F9;
 `;
 
 const Label = styled.span`
