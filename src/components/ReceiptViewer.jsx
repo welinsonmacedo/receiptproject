@@ -170,7 +170,7 @@ const ReceiptViewer = () => {
   return (
     <Container>
       <Main ref={containerRef}>
-        <LogoImage src='https://r2.easyimg.io/9daixyqos/imagem_do_whatsapp_de_2024-03-24_%C3%A0(s)_20.37.08_3ac2c238.jpg' alt="Logo" />
+        <LogoImage src='/LOGO.jpg' alt="Logo" />
         <SubTitle>DS Viagens e Transportes</SubTitle>
         <SubContainer>
           <Field>

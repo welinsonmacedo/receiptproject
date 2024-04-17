@@ -55,7 +55,10 @@ const NavToggle = styled.div`
     display: block;
   }
 `;
-
+const Image = styled.img`
+border-radius: 50%;
+width: 50px;
+`
 const Menu = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -65,7 +68,7 @@ const Menu = () => {
 
   return (
     <NavbarContainer>
-      <Brand to="/"> <img src="profile.png" alt="Icone-perfil" /></Brand>
+      <Brand to="/home"> <Image src="/LOGO.jpg" alt="Icone-perfil"  /></Brand>
       <NavToggle onClick={toggleMenu}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
