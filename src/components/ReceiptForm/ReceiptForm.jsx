@@ -7,9 +7,7 @@ import {
   FormGroup,
   Label,
   Input,
-  Select,
   Button,
-  AddButton,
   ModalContainer,
   ModalContent,
   ModalHeader,
@@ -33,114 +31,12 @@ const ReceiptForm = () => {
   const [carroPlaca, setCarroPlaca] = useState('');
   const [enderecoOrigem, setEnderecoOrigem] = useState('');
   const [enderecoDestino, setEnderecoDestino] = useState('');
-  const [newField, setNewField] = useState('');
-  const [collectionsData, setCollectionsData] = useState({
-    clientes: [],
-    documentosClientes: [],
-    empresas: [],
-    documentosEmpresas: [],
-    servicos: [],
-    motoristas: [],
-    documentosMotoristas: [],
-    carrosPlacas: [],
-    enderecosOrigem: [],
-    enderecosDestino: [],
-    valores: [],
-    datasAtuais: [],
-    tiposPagamento: [],
-    assinaturasEmpresas: []
-  });
-  const [modalOpen, setModalOpen] = useState(false);
-  const [activeCollection, setActiveCollection] = useState('');
   const [message, setMessage] = useState('');
 
   const auth = getAuth();
 
   const handleFieldChange = (setter) => (e) => {
     setter(e.target.value);
-  };
-
-  const handleAddField = async (e) => {
-    e.preventDefault();
-    if (!newField || !activeCollection) return;
-
-    try {
-      const userId = auth.currentUser.uid;
-      const docRef = await addDoc(collection(db, activeCollection), {
-        value: newField,
-        userId
-      });
-      console.log(`Document written with ID: ${docRef.id}`);
-      fetchCollectionsData();
-      setModalOpen(false);
-      setNewField('');
-    } catch (error) {
-      console.error('Error adding document: ', error);
-    }
-  };
-
-  const fetchCollectionsData = async () => {
-    const collections = [
-      'clientes',
-      'documentosClientes',
-      'empresas',
-      'documentosEmpresas',
-      'servicos',
-      'motoristas',
-      'documentosMotoristas',
-      'carrosPlacas',
-      'enderecosOrigem',
-      'enderecosDestino',
-      'valores',
-      'datasAtuais',
-      'tiposPagamento',
-      'assinaturasEmpresas'
-    ];
-
-    const userId = auth.currentUser?.uid;
-
-    if (!userId) return;
-
-    const newCollectionsData = {};
-
-    for (const collectionName of collections) {
-      const q = query(collection(db, collectionName), where('userId', '==', userId));
-      const querySnapshot = await getDocs(q);
-      newCollectionsData[collectionName] = querySnapshot.docs.map((doc) => doc.data().value);
-    }
-
-    setCollectionsData(newCollectionsData);
-  };
-
-  useEffect(() => {
-    fetchCollectionsData();
-  }, []);
-
-  useEffect(() => {
-    const date = new Date();
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    const currentDate = `${day}/${month}/${year}`;
-
-    setDataAtual(currentDate);
-  }, []);
-
-  const resetForm = () => {
-    setCliente('');
-    setDocumentoCliente('');
-    setEmpresa('');
-    setDocumentoEmpresa('');
-    setServico('');
-    setValor('');
-    setTipoPagamento('');
-    setAssinaturaEmpresa('');
-    setMotorista('');
-    setDocumentoMotorista('');
-    setCarroPlaca('');
-    setEnderecoOrigem('');
-    setEnderecoDestino('');
-    setNewField('');
   };
 
   const validateForm = () => {
@@ -206,108 +102,79 @@ const ReceiptForm = () => {
     }
   };
 
-  const openModal = (collectionName) => {
-    setActiveCollection(collectionName);
-    setModalOpen(true);
+  const resetForm = () => {
+    setCliente('');
+    setDocumentoCliente('');
+    setEmpresa('');
+    setDocumentoEmpresa('');
+    setServico('');
+    setValor('');
+    setTipoPagamento('');
+    setAssinaturaEmpresa('');
+    setMotorista('');
+    setDocumentoMotorista('');
+    setCarroPlaca('');
+    setEnderecoOrigem('');
+    setEnderecoDestino('');
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
-  };
+  useEffect(() => {
+    const date = new Date();
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const currentDate = `${day}/${month}/${year}`;
+
+    setDataAtual(currentDate);
+  }, []);
 
   return (
     <FormContainer>
       <h2>Gerar Recibo</h2>
       <form onSubmit={handleSubmit}>
-       
-
         <FormGroup>
           <Label>Cliente</Label>
-          <div>
-            <Input
-              list="clientes"
-              value={cliente}
-              onChange={handleFieldChange(setCliente)}
-            />
-            <datalist id="clientes">
-              {collectionsData.clientes.map((cliente, index) => (
-                <option key={index} value={cliente} />
-              ))}
-            </datalist>
-          </div>
+          <Input
+            type="text"
+            value={cliente}
+            onChange={handleFieldChange(setCliente)}
+          />
         </FormGroup>
 
         <FormGroup>
           <Label>Documento do Cliente</Label>
-          <div>
-            <Input
-              list="documentosClientes"
-              value={documentoCliente}
-              onChange={handleFieldChange(setDocumentoCliente)}
-            />
-            <datalist id="documentosClientes">
-              {collectionsData.documentosClientes.map((doc, index) => (
-                <option key={index} value={doc} />
-              ))}
-            </datalist>
-          </div>
+          <Input
+            type="text"
+            value={documentoCliente}
+            onChange={handleFieldChange(setDocumentoCliente)}
+          />
         </FormGroup>
 
         <FormGroup>
           <Label>Empresa</Label>
-          <div>
-            <Select
-              value={empresa}
-              onChange={handleFieldChange(setEmpresa)}
-            >
-              {collectionsData.empresas.map((empresa, index) => (
-                <option key={index} value={empresa}>
-                  {empresa}
-                </option>
-              ))}
-            </Select>
-            <AddButton type="button" onClick={() => openModal('empresas')}>
-              +
-            </AddButton>
-          </div>
+          <Input
+            type="text"
+            value={empresa}
+            onChange={handleFieldChange(setEmpresa)}
+          />
         </FormGroup>
 
         <FormGroup>
           <Label>Documento da Empresa</Label>
-          <div>
-            <Select
-              value={documentoEmpresa}
-              onChange={handleFieldChange(setDocumentoEmpresa)}
-            >
-              {collectionsData.documentosEmpresas.map((doc, index) => (
-                <option key={index} value={doc}>
-                  {doc}
-                </option>
-              ))}
-            </Select>
-            <AddButton type="button" onClick={() => openModal('documentosEmpresas')}>
-              +
-            </AddButton>
-          </div>
+          <Input
+            type="text"
+            value={documentoEmpresa}
+            onChange={handleFieldChange(setDocumentoEmpresa)}
+          />
         </FormGroup>
 
         <FormGroup>
           <Label>Serviço</Label>
-          <div>
-            <Select
-              value={servico}
-              onChange={handleFieldChange(setServico)}
-            >
-              {collectionsData.servicos.map((servico, index) => (
-                <option key={index} value={servico}>
-                  {servico}
-                </option>
-              ))}
-            </Select>
-            <AddButton type="button" onClick={() => openModal('servicos')}>
-              +
-            </AddButton>
-          </div>
+          <Input
+            type="text"
+            value={servico}
+            onChange={handleFieldChange(setServico)}
+          />
         </FormGroup>
 
         <FormGroup>
@@ -321,97 +188,47 @@ const ReceiptForm = () => {
 
         <FormGroup>
           <Label>Tipo de Pagamento</Label>
-          <div>
-            <Select
-              value={tipoPagamento}
-              onChange={handleFieldChange(setTipoPagamento)}
-            >
-              {collectionsData.tiposPagamento.map((tipo, index) => (
-                <option key={index} value={tipo}>
-                  {tipo}
-                </option>
-              ))}
-            </Select>
-            <AddButton type="button" onClick={() => openModal('tiposPagamento')}>
-              +
-            </AddButton>
-          </div>
+          <Input
+            type="text"
+            value={tipoPagamento}
+            onChange={handleFieldChange(setTipoPagamento)}
+          />
         </FormGroup>
 
         <FormGroup>
           <Label>Assinatura da Empresa</Label>
-          <div>
-            <Select
-              value={assinaturaEmpresa}
-              onChange={handleFieldChange(setAssinaturaEmpresa)}
-            >
-              {collectionsData.assinaturasEmpresas.map((assinatura, index) => (
-                <option key={index} value={assinatura}>
-                  {assinatura}
-                </option>
-              ))}
-            </Select>
-            <AddButton type="button" onClick={() => openModal('assinaturasEmpresas')}>
-              +
-            </AddButton>
-          </div>
+          <Input
+            type="text"
+            value={assinaturaEmpresa}
+            onChange={handleFieldChange(setAssinaturaEmpresa)}
+          />
         </FormGroup>
 
         <FormGroup>
           <Label>Motorista</Label>
-          <div>
-            <Select
-              value={motorista}
-              onChange={handleFieldChange(setMotorista)}
-            >
-              {collectionsData.motoristas.map((motorista, index) => (
-                <option key={index} value={motorista}>
-                  {motorista}
-                </option>
-              ))}
-            </Select>
-            <AddButton type="button" onClick={() => openModal('motoristas')}>
-              +
-            </AddButton>
-          </div>
+          <Input
+            type="text"
+            value={motorista}
+            onChange={handleFieldChange(setMotorista)}
+          />
         </FormGroup>
 
         <FormGroup>
           <Label>Documento do Motorista</Label>
-          <div>
-            <Select
-              value={documentoMotorista}
-              onChange={handleFieldChange(setDocumentoMotorista)}
-            >
-              {collectionsData.documentosMotoristas.map((doc, index) => (
-                <option key={index} value={doc}>
-                  {doc}
-                </option>
-              ))}
-            </Select>
-            <AddButton type="button" onClick={() => openModal('documentosMotoristas')}>
-              +
-            </AddButton>
-          </div>
+          <Input
+            type="text"
+            value={documentoMotorista}
+            onChange={handleFieldChange(setDocumentoMotorista)}
+          />
         </FormGroup>
 
         <FormGroup>
           <Label>Placa do Veículo</Label>
-          <div>
-            <Select
-              value={carroPlaca}
-              onChange={handleFieldChange(setCarroPlaca)}
-            >
-              {collectionsData.carrosPlacas.map((placa, index) => (
-                <option key={index} value={placa}>
-                  {placa}
-                </option>
-              ))}
-            </Select>
-            <AddButton type="button" onClick={() => openModal('carrosPlacas')}>
-              +
-            </AddButton>
-          </div>
+          <Input
+            type="text"
+            value={carroPlaca}
+            onChange={handleFieldChange(setCarroPlaca)}
+          />
         </FormGroup>
 
         <FormGroup>
@@ -435,30 +252,6 @@ const ReceiptForm = () => {
         <Button type="submit">Gerar Recibo</Button>
         {message && <p>{message}</p>}
       </form>
-
-      {modalOpen && (
-        <ModalContainer>
-          <ModalContent>
-            <ModalHeader>
-              <h2>Adicionar Novo</h2>
-              <Button onClick={closeModal}>Fechar</Button>
-            </ModalHeader>
-            <ModalBody>
-              <FormGroupline>
-                <Label>Nome</Label>
-                <Input
-                  type="text"
-                  value={newField}
-                  onChange={(e) => setNewField(e.target.value)}
-                />
-              </FormGroupline>
-            </ModalBody>
-            <ModalFooter>
-              <Button onClick={handleAddField}>Adicionar</Button>
-            </ModalFooter>
-          </ModalContent>
-        </ModalContainer>
-      )}
     </FormContainer>
   );
 };
