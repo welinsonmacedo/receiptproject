@@ -135,7 +135,7 @@ const ReceiptView = () => {
       <ReceiptFooter>
         {receipt.assinaturaEmpresa && <Assinatura>{receipt.assinaturaEmpresa}</Assinatura>}
         <p>Obrigado pela preferência!</p>
-        {receipt.empresa && <p><strong>Serviço:</strong> {receipt.empresa}</p>}
+        {receipt.empresa && <p><strong></strong> {receipt.empresa}</p>}
       </ReceiptFooter>
      
     </ReceiptContainer>
