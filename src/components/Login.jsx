@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 const Container = styled.div`
@@ -20,25 +20,34 @@ justify-content: center;
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   padding: 20px;
   width: 80%;
+  border: none;
   
 `;
 
 const Label = styled.label`
   display: block;
   margin-bottom: 5px;
+  font-weight:bold;
+  position: relative;
+  top: 14px;
+  left: 20px;
+  color: #4d7394;
 `;
 
 const Input = styled.input`
     width: 100%;
   padding: 10px;
   font-size: 16px;
+  border: none;
+  border-bottom: 2px solid gray;
 `;
 const ToggleButton = styled.button`
 position: relative;
-left: 100%;
+
+left: 94%;
 bottom:30px;
 `;
 const Button = styled.button`
@@ -94,7 +103,7 @@ const Login = ({ setAuthenticated }) => {
           setError(null);
           console.log('Usuário logado:', userCredential.user);
           setAuthenticated(true);
-          navigate('/home');
+          navigate('/dashboard');
         })
         .catch((error) => {
           setError('Erro ao fazer login: ' + error.message);
@@ -105,26 +114,26 @@ const Login = ({ setAuthenticated }) => {
   return (
     <Container>
       <Title>
-        <img src="Login.png" alt="Icone-Login" width={'60px'} />
+        <img src="WM.png" alt="Icone-Login" width={'200px'} />
       </Title>
       <FormGroup>
-        <Label>Email:</Label>
+        <Label>E-mail</Label>
         <Input type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
       </FormGroup>
       <FormGroup>
-        <Label>Senha:</Label>
+        <Label>Senha</Label>
         <Input type={showPassword ? 'text' : 'password'} value={senha} onChange={(e) => setSenha(e.target.value)} />
         <ToggleButton onClick={() => setShowPassword(!showPassword)}>{showPassword ? '🙈' : '👁️'}</ToggleButton>
       </FormGroup>
       <ContainerLinks>
-       
-          <Link to="/createuser" >Register</Link>
-          <Link to="/resetpassword">Esqueceu a senha? </Link>
-        
-       
+
+        <Link to="/createuser" >Create an account</Link>
+        <Link to="/resetpassword">Forgot password? </Link>
+
+
       </ContainerLinks>
 
-      <Button onClick={handleLogin}>Entrar</Button>
+      <Button onClick={handleLogin}>Login</Button>
       {error && <ErrorMessage>{error}</ErrorMessage>}
 
     </Container>

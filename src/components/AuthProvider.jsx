@@ -6,12 +6,14 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [authenticated, setAuthenticated] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
   const auth = getAuth();
 
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setAuthenticated(true);
+      setUserEmail(user.email);
       setUserId(user.uid);
     } else {
       setAuthenticated(false);
@@ -20,7 +22,7 @@ const AuthProvider = ({ children }) => {
   });
 
   return (
-    <AuthContext.Provider value={{ authenticated, userId }}>
+    <AuthContext.Provider value={{ authenticated, userId ,userEmail }}>
       {children}
     </AuthContext.Provider>
   );
