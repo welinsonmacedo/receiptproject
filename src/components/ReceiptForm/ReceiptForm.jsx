@@ -73,6 +73,7 @@ const ReceiptForm = () => {
       console.log(`Document written with ID: ${docRef.id}`);
       fetchCollectionsData();
       setModalOpen(false);
+      setNewField('');
     } catch (error) {
       console.error('Error adding document: ', error);
     }
@@ -218,16 +219,7 @@ const ReceiptForm = () => {
     <FormContainer>
       <h2>Gerar Recibo</h2>
       <form onSubmit={handleSubmit}>
-        <FormGroup>
-          <Label>Tipo de Recibo</Label>
-          <Select
-            name="receiptType"
-            value="transporte"
-            disabled
-          >
-            <option value="transporte">Transporte</option>
-          </Select>
-        </FormGroup>
+       
 
         <FormGroup>
           <Label>Cliente</Label>
@@ -329,30 +321,40 @@ const ReceiptForm = () => {
 
         <FormGroup>
           <Label>Tipo de Pagamento</Label>
-          <Select
-            value={tipoPagamento}
-            onChange={handleFieldChange(setTipoPagamento)}
-          >
-            {collectionsData.tiposPagamento.map((tipo, index) => (
-              <option key={index} value={tipo}>
-                {tipo}
-              </option>
-            ))}
-          </Select>
+          <div>
+            <Select
+              value={tipoPagamento}
+              onChange={handleFieldChange(setTipoPagamento)}
+            >
+              {collectionsData.tiposPagamento.map((tipo, index) => (
+                <option key={index} value={tipo}>
+                  {tipo}
+                </option>
+              ))}
+            </Select>
+            <AddButton type="button" onClick={() => openModal('tiposPagamento')}>
+              +
+            </AddButton>
+          </div>
         </FormGroup>
 
         <FormGroup>
           <Label>Assinatura da Empresa</Label>
-          <Select
-            value={assinaturaEmpresa}
-            onChange={handleFieldChange(setAssinaturaEmpresa)}
-          >
-            {collectionsData.assinaturasEmpresas.map((assinatura, index) => (
-              <option key={index} value={assinatura}>
-                {assinatura}
-              </option>
-            ))}
-          </Select>
+          <div>
+            <Select
+              value={assinaturaEmpresa}
+              onChange={handleFieldChange(setAssinaturaEmpresa)}
+            >
+              {collectionsData.assinaturasEmpresas.map((assinatura, index) => (
+                <option key={index} value={assinatura}>
+                  {assinatura}
+                </option>
+              ))}
+            </Select>
+            <AddButton type="button" onClick={() => openModal('assinaturasEmpresas')}>
+              +
+            </AddButton>
+          </div>
         </FormGroup>
 
         <FormGroup>
