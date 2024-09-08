@@ -7,12 +7,12 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
 const ReceiptContainer = styled.div`
-  width: 400px;
+ max-width: 600px;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #2e2727;
   border-radius: 4px;
   font-family: 'Courier New', Courier, monospace;
-  background: #e6ff0565;
+  background:  #cbdb34dd;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   margin:0 auto;
   text-align: center;
@@ -77,30 +77,25 @@ const ReceiptView = () => {
     fetchReceipt();
   }, [id]);
 
-const downloadPDF = () => {
-  html2canvas(document.querySelector('#receipt')).then(canvas => {
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-
-    // Definindo a largura e altura da imagem proporcionalmente ao tamanho da página
-    const imgWidth = pageWidth - 20; // Margem de 10mm de cada lado
-    const imgHeight = canvas.height * imgWidth / canvas.width;
-
-    // Redimensionando se a altura for maior que a página
-    const adjustedHeight = imgHeight > pageHeight - 20 ? pageHeight - 20 : imgHeight;
-
-    // Centralizando a imagem horizontalmente e verticalmente
-    const xPosition = (pageWidth - imgWidth) / 2; // Centraliza horizontalmente
-    const yPosition = (pageHeight - adjustedHeight) / 2; // Centraliza verticalmente
-
-    pdf.addImage(imgData, 'PNG', xPosition, yPosition, imgWidth, adjustedHeight);
-const nomeCliente= receipt.cliente
-    pdf.save(nomeCliente+'.pdf');
-  });
-};
+  const downloadPDF = () => {
+    html2canvas(document.querySelector('#receipt'), { scale: 2 }).then(canvas => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+  
+      const imgWidth = pageWidth - 20; // Margem de 10mm de cada lado
+      const imgHeight = canvas.height * imgWidth / canvas.width;
+  
+      const adjustedHeight = imgHeight > pageHeight - 20 ? pageHeight - 20 : imgHeight;
+      const xPosition = (pageWidth - imgWidth) / 2;
+      const yPosition = (pageHeight - adjustedHeight) / 2;
+  
+      pdf.addImage(imgData, 'PNG', xPosition, yPosition, imgWidth, adjustedHeight);
+      const nomeCliente = receipt.cliente;
+      pdf.save(nomeCliente + '.pdf');
+    });
+  };
 
   const downloadPNG = () => {
     html2canvas(document.querySelector('#receipt')).then(canvas => {
