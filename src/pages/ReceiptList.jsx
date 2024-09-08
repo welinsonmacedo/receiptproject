@@ -153,6 +153,10 @@ const ReceiptList = () => {
     setFilters({ ...filters, [name]: value });
   };
 
+  const handleReceiptClick = (id) => {
+    navigate(`/receipt/${id}`);
+  };
+
   const handleDeleteReceipt = async (id) => {
     const confirmed = window.confirm('Tem certeza que deseja excluir este recibo?');
     if (!confirmed) return;
@@ -182,7 +186,7 @@ const ReceiptList = () => {
       <ReceiptListStyle>
         {receipts.length > 0 ? (
           receipts.map((receipt) => (
-            <ReceiptItem key={receipt.id}>
+            <ReceiptItem key={receipt.id} onClick={() => handleReceiptClick(receipt.id)}>
               <p><strong>Cliente:</strong> {receipt.cliente}</p>
               <p><strong>Data:</strong> {receipt.dataAtual}</p>
               <p><strong>Valor:</strong> R$ {receipt.valor}</p>
