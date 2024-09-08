@@ -36,6 +36,7 @@ function App() {
           <Route path="/resetpassword" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/receiptform"  element={<ReceiptForm /> } />
+          <Route path="/edit-receipt/:id"  element={<ReceiptForm /> } />
           <Route path="/receiptformSales"  element={<ReceiptFormSales/> } />
           <Route path="/receiptlist"  element={<ReceiptList /> } />
           <Route path="/receipt/:id" element={<ReceiptView/>} />

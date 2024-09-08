@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where, deleteDoc, doc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import db from '../services/firestore';
@@ -59,22 +59,22 @@ const Button = styled.button`
 
 const ReceiptListStyle = styled.div`
   margin-top: 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
 `;
 
 const ReceiptItem = styled.div`
   padding: 20px;
+  margin-bottom: 15px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  background-color: #fff;
+  background-color: #ada3a345;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.3s;
   cursor: pointer;
 
   &:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    background-color: #70b4e045;
   }
 
   h3 {
@@ -90,6 +90,21 @@ const ReceiptItem = styled.div`
 
   strong {
     color: #111827;
+  }
+`;
+
+const ActionButtons = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+`;
+
+const DeleteButton = styled(Button)`
+  background-color: #f44336;
+  
+  &:hover {
+    background-color: #d32f2f;
   }
 `;
 
@@ -138,8 +153,16 @@ const ReceiptList = () => {
     setFilters({ ...filters, [name]: value });
   };
 
-  const handleReceiptClick = (id) => {
-    navigate(`/receipt/${id}`);
+  const handleDeleteReceipt = async (id) => {
+    const confirmed = window.confirm('Tem certeza que deseja excluir este recibo?');
+    if (!confirmed) return;
+
+    try {
+      await deleteDoc(doc(db, 'recibos', id));
+      setReceipts(receipts.filter((receipt) => receipt.id !== id));
+    } catch (error) {
+      console.error('Erro ao excluir recibo:', error);
+    }
   };
 
   return (
@@ -159,11 +182,14 @@ const ReceiptList = () => {
       <ReceiptListStyle>
         {receipts.length > 0 ? (
           receipts.map((receipt) => (
-            <ReceiptItem key={receipt.id} onClick={() => handleReceiptClick(receipt.id)}>
-              <h3>Recibo ID: {receipt.id}</h3>
+            <ReceiptItem key={receipt.id}>
               <p><strong>Cliente:</strong> {receipt.cliente}</p>
               <p><strong>Data:</strong> {receipt.dataAtual}</p>
               <p><strong>Valor:</strong> R$ {receipt.valor}</p>
+              
+              <ActionButtons>
+                <DeleteButton onClick={() => handleDeleteReceipt(receipt.id)}>Excluir</DeleteButton>
+              </ActionButtons>
             </ReceiptItem>
           ))
         ) : (
