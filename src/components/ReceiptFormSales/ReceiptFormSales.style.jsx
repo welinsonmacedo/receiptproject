@@ -4,7 +4,7 @@ export const FormContainer = styled.div`
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #c9eb6e;
+  background-color: #f5f5f5;
   border: 1px solid #ddd;
   border-radius: 8px;
 `;

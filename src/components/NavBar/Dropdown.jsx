@@ -4,11 +4,9 @@ import { DropdownMenu, DropdownItem } from './Dropdown.styles';
 const Dropdown = () => {
   return (
     <DropdownMenu>
-      <DropdownItem href="/receiptform">Gerar Recibo </DropdownItem>
-      <DropdownItem href="/service2">Gerar Orçamento</DropdownItem>
-      <DropdownItem href="/service3">Gerar Cupom</DropdownItem>
-      <DropdownItem href="/service1">Cadastros </DropdownItem>
-      <DropdownItem href="/service2">Histórico</DropdownItem>
+      <DropdownItem href="/receiptform">Gerar Recibo Transporte </DropdownItem>
+      <DropdownItem href="/receiptformSales">Gerar Recibo de Vendas</DropdownItem>
+      <DropdownItem href="/receiptlist">Histórico</DropdownItem>
       <DropdownItem href="/">Sair</DropdownItem>
     </DropdownMenu>
   );

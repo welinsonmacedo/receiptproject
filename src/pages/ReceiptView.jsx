@@ -77,27 +77,30 @@ const ReceiptView = () => {
     fetchReceipt();
   }, [id]);
 
-  const downloadPDF = () => {
-    html2canvas(document.querySelector('#receipt')).then(canvas => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgWidth = 190; // Ajuste a largura da imagem
-      const pageHeight = 297; // Ajuste a altura da página para deixar margem
-      const imgHeight = canvas.height * imgWidth / canvas.width;
-      let heightLeft = imgHeight;
+const downloadPDF = () => {
+  html2canvas(document.querySelector('#receipt')).then(canvas => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
 
-      pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
 
-      while (heightLeft >= 0) {
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 10, heightLeft - imgHeight, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
+    // Definindo a largura e altura da imagem proporcionalmente ao tamanho da página
+    const imgWidth = pageWidth - 20; // Margem de 10mm de cada lado
+    const imgHeight = canvas.height * imgWidth / canvas.width;
 
-      pdf.save('recibo.pdf');
-    });
-  };
+    // Redimensionando se a altura for maior que a página
+    const adjustedHeight = imgHeight > pageHeight - 20 ? pageHeight - 20 : imgHeight;
+
+    // Centralizando a imagem horizontalmente e verticalmente
+    const xPosition = (pageWidth - imgWidth) / 2; // Centraliza horizontalmente
+    const yPosition = (pageHeight - adjustedHeight) / 2; // Centraliza verticalmente
+
+    pdf.addImage(imgData, 'PNG', xPosition, yPosition, imgWidth, adjustedHeight);
+const nomeCliente= receipt.cliente
+    pdf.save(nomeCliente+'.pdf');
+  });
+};
 
   const downloadPNG = () => {
     html2canvas(document.querySelector('#receipt')).then(canvas => {
@@ -113,38 +116,39 @@ const ReceiptView = () => {
 
   return (
     <>
-    <ReceiptContainer id="receipt">
-      <ReceiptHeader>
-        <h2>RECIBO</h2>
-        <p>Data: {receipt.dataAtual}</p>
-      </ReceiptHeader>
-      <ReceiptBody>
-        {receipt.empresa && <p><strong>Empresa:</strong> {receipt.empresa}</p>}
-        {receipt.documentoEmpresa && <p><strong>Documento da Empresa:</strong> {receipt.documentoEmpresa}</p>}
-        {receipt.cliente && <p><strong>Cliente:</strong> {receipt.cliente}</p>}
-        {receipt.documentoCliente && <p><strong>Documento do Cliente:</strong> {receipt.documentoCliente}</p>}
-        {receipt.motorista && <p><strong>Motorista:</strong> {receipt.motorista}</p>}
-        {receipt.documentoMotorista && <p><strong>Documento do Motorista:</strong> {receipt.documentoMotorista}</p>}
-        {receipt.carroPlaca && <p><strong>Placa do Carro:</strong> {receipt.carroPlaca}</p>}
-        {receipt.enderecoOrigem && <p><strong>Endereço de Origem:</strong> {receipt.enderecoOrigem}</p>}
-        {receipt.enderecoDestino && <p><strong>Endereço de Destino:</strong> {receipt.enderecoDestino}</p>}
-        {receipt.valor && <p><strong>Valor:</strong> R$ {parseFloat(receipt.valor).toFixed(2)}</p>}
-        {receipt.tipoPagamento && <p><strong>Tipo de Pagamento:</strong> {receipt.tipoPagamento}</p>}
-        {receipt.servico && <p><strong>Serviço:</strong> {receipt.servico}</p>}
-      </ReceiptBody>
-      <ReceiptFooter>
-        {receipt.assinaturaEmpresa && <Assinatura>{receipt.assinaturaEmpresa}</Assinatura>}
-        <p>Obrigado pela preferência!</p>
-        {receipt.empresa && <p><strong></strong> {receipt.empresa}</p>}
-      </ReceiptFooter>
-     
-    </ReceiptContainer>
-    <ButtonContainer>
-  
+      <ReceiptContainer id="receipt">
+        <ReceiptHeader>
+          <h2>RECIBO</h2>
+          <p>Data: {receipt.dataAtual}</p>
+        </ReceiptHeader>
+        <ReceiptBody>
+          {receipt.empresa && <p><strong>Empresa:</strong> {receipt.empresa}</p>}
+          {receipt.documentoEmpresa && <p><strong>Documento da Empresa:</strong> {receipt.documentoEmpresa}</p>}
+          {receipt.cliente && <p><strong>Cliente:</strong> {receipt.cliente}</p>}
+          {receipt.documentoCliente && <p><strong>Documento do Cliente:</strong> {receipt.documentoCliente}</p>}
+          {receipt.motorista && <p><strong>Motorista:</strong> {receipt.motorista}</p>}
+          {receipt.documentoMotorista && <p><strong>Documento do Motorista:</strong> {receipt.documentoMotorista}</p>}
+          {receipt.modeloVeiculo&& <p><strong>Modelo Veiculo:</strong> {receipt.modeloVeiculo}</p>}
+          {receipt.carroPlaca && <p><strong>Placa do Carro:</strong> {receipt.carroPlaca}</p>}
+          {receipt.enderecoOrigem && <p><strong>Endereço de Origem:</strong> {receipt.enderecoOrigem}</p>}
+          {receipt.enderecoDestino && <p><strong>Endereço de Destino:</strong> {receipt.enderecoDestino}</p>}
+          {receipt.valor && <p><strong>Valor:</strong> R$ {parseFloat(receipt.valor).toFixed(2)}</p>}
+          {receipt.tipoPagamento && <p><strong>Tipo de Pagamento:</strong> {receipt.tipoPagamento}</p>}
+          {receipt.servico && <p><strong>Serviço:</strong> {receipt.servico}</p>}
+        </ReceiptBody>
+        <ReceiptFooter>
+          {receipt.assinaturaEmpresa && <Assinatura>{receipt.assinaturaEmpresa}</Assinatura>}
+          <p>Obrigado pela preferência!</p>
+          {receipt.empresa && <p><strong></strong> {receipt.empresa}</p>}
+        </ReceiptFooter>
+
+      </ReceiptContainer>
+      <ButtonContainer>
+        <button onClick={downloadPDF}>PDF</button>
         <button onClick={downloadPNG}>Salvar como PNG</button>
       </ButtonContainer>
     </>
-    
+
   );
 };
 

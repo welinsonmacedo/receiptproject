@@ -14,7 +14,7 @@ import {
   ModalBody,
   ModalFooter,
   FormGroupline
-} from './ReceiptForm.style';
+} from './ReceiptFormSales.style';
 
 const ReceiptForm = () => {
   const [cliente, setCliente] = useState('');
@@ -29,7 +29,6 @@ const ReceiptForm = () => {
   const [motorista, setMotorista] = useState('');
   const [documentoMotorista, setDocumentoMotorista] = useState('');
   const [carroPlaca, setCarroPlaca] = useState('');
-  const [modeloVeiculo, setModeloVeiculo] = useState('');
   const [enderecoOrigem, setEnderecoOrigem] = useState('');
   const [enderecoDestino, setEnderecoDestino] = useState('');
   const [message, setMessage] = useState('');
@@ -53,7 +52,6 @@ const ReceiptForm = () => {
       { field: motorista, name: 'Motorista' },
       { field: documentoMotorista, name: 'Documento do Motorista' },
       { field: carroPlaca, name: 'Placa do Veículo' },
-      { field: modeloVeiculo, name: 'Modelo do Veiculo' },
       { field: enderecoOrigem, name: 'Endereço de Origem' },
       { field: enderecoDestino, name: 'Endereço de Destino' },
     ];
@@ -89,7 +87,6 @@ const ReceiptForm = () => {
         motorista,
         documentoMotorista,
         carroPlaca,
-        modeloVeiculo,
         enderecoOrigem,
         enderecoDestino,
         userId,
@@ -117,7 +114,6 @@ const ReceiptForm = () => {
     setMotorista('');
     setDocumentoMotorista('');
     setCarroPlaca('');
-    setModeloVeiculo('');
     setEnderecoOrigem('');
     setEnderecoDestino('');
   };
@@ -133,138 +129,8 @@ const ReceiptForm = () => {
   }, []);
 
   return (
-    <FormContainer>
-      <h2>Gerar Recibo Transporte</h2>
-      <form onSubmit={handleSubmit}>
-        <FormGroup>
-          <Label>Cliente</Label>
-          <Input
-            type="text"
-            value={cliente}
-            onChange={handleFieldChange(setCliente)}
-          />
-        </FormGroup>
 
-        <FormGroup>
-          <Label>Documento do Cliente</Label>
-          <Input
-            type="text"
-            value={documentoCliente}
-            onChange={handleFieldChange(setDocumentoCliente)}
-          />
-        </FormGroup>
+    <h2>Em Breve Disponivel</h2>
 
-        <FormGroup>
-          <Label>Empresa</Label>
-          <Input
-            type="text"
-            value={empresa}
-            onChange={handleFieldChange(setEmpresa)}
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label>Documento da Empresa</Label>
-          <Input
-            type="text"
-            value={documentoEmpresa}
-            onChange={handleFieldChange(setDocumentoEmpresa)}
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label>Serviço</Label>
-          <Input
-            type="text"
-            value={servico}
-            onChange={handleFieldChange(setServico)}
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label>Valor</Label>
-          <Input
-            type="text"
-            value={valor}
-            onChange={handleFieldChange(setValor)}
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label>Tipo de Pagamento</Label>
-          <Input
-            type="text"
-            value={tipoPagamento}
-            onChange={handleFieldChange(setTipoPagamento)}
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label>Assinatura da Empresa</Label>
-          <Input
-            type="text"
-            value={assinaturaEmpresa}
-            onChange={handleFieldChange(setAssinaturaEmpresa)}
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label>Motorista</Label>
-          <Input
-            type="text"
-            value={motorista}
-            onChange={handleFieldChange(setMotorista)}
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label>Documento do Motorista</Label>
-          <Input
-            type="text"
-            value={documentoMotorista}
-            onChange={handleFieldChange(setDocumentoMotorista)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label>Modelo Veículo</Label>
-          <Input
-            type="text"
-            value={modeloVeiculo}
-            onChange={handleFieldChange(setModeloVeiculo)}
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label>Placa do Veículo</Label>
-          <Input
-            type="text"
-            value={carroPlaca}
-            onChange={handleFieldChange(setCarroPlaca)}
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label>Endereço de Origem</Label>
-          <Input
-            type="text"
-            value={enderecoOrigem}
-            onChange={handleFieldChange(setEnderecoOrigem)}
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label>Endereço de Destino</Label>
-          <Input
-            type="text"
-            value={enderecoDestino}
-            onChange={handleFieldChange(setEnderecoDestino)}
-          />
-        </FormGroup>
-
-        <Button type="submit">Gerar Recibo</Button>
-        {message && <p>{message}</p>}
-      </form>
-    </FormContainer>
-  );
-};
-
-export default ReceiptForm;
+    )}
+  export default ReceiptForm;

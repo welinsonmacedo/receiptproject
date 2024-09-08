@@ -7,53 +7,95 @@ import styled from 'styled-components';
 
 const ListContainer = styled.div`
   padding: 20px;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const FilterGroup = styled.div`
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
 
 const Label = styled.label`
-  display: block;
-  margin-bottom: 5px;
+  font-weight: 600;
+  color: #333;
 `;
 
 const Input = styled.input`
-  width: 100%;
-  padding: 8px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+
+  &:focus {
+    border-color: #007bff;
+    outline: none;
+  }
 `;
 
 const Button = styled.button`
-  padding: 10px 15px;
+  padding: 12px 20px;
   background-color: #007bff;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
 
   &:hover {
     background-color: #0056b3;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 `;
 
 const ReceiptListStyle = styled.div`
   margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
 `;
 
 const ReceiptItem = styled.div`
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-bottom: 10px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s;
   cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  h3 {
+    font-size: 18px;
+    color: #1f2937;
+  }
+
+  p {
+    margin: 8px 0;
+    font-size: 16px;
+    color: #4b5563;
+  }
+
+  strong {
+    color: #111827;
+  }
 `;
 
 const formatDateForFirestore = (dateStr) => {
   const [year, month, day] = dateStr.split('-');
-  return `${day}/${month}/${year}`; // Formato dia/mês/ano para Firestore
+  return `${day}/${month}/${year}`;
 };
 
 const ReceiptList = () => {
@@ -61,8 +103,8 @@ const ReceiptList = () => {
   const [filters, setFilters] = useState({
     date: '',
   });
-  const navigate = useNavigate(); // Hook para navegação
-  const auth = getAuth(); // Obter o usuário autenticado
+  const navigate = useNavigate();
+  const auth = getAuth();
 
   const fetchReceipts = async () => {
     try {
@@ -97,7 +139,7 @@ const ReceiptList = () => {
   };
 
   const handleReceiptClick = (id) => {
-    navigate(`/receipt/${id}`); // Navegar para a página de visualização
+    navigate(`/receipt/${id}`);
   };
 
   return (

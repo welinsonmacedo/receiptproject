@@ -12,6 +12,7 @@ import AuthProvider from './components/AuthProvider';
 import ProfileMenu from './components/ProfileMenu/ProfileMenu';
 import Dashboard from './pages/Dashboard';
 import ReceiptForm from './components/ReceiptForm/ReceiptForm';
+import ReceiptFormSales from './components/ReceiptFormSales/ReceiptFormSales';
 import ReceiptList from './pages/ReceiptList';
 import ReceiptView from './pages/ReceiptView';
 
@@ -35,6 +36,7 @@ function App() {
           <Route path="/resetpassword" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/receiptform"  element={<ReceiptForm /> } />
+          <Route path="/receiptformSales"  element={<ReceiptFormSales/> } />
           <Route path="/receiptlist"  element={<ReceiptList /> } />
           <Route path="/receipt/:id" element={<ReceiptView/>} />
         </Routes>
