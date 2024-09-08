@@ -4,7 +4,7 @@ export const FormContainer = styled.div`
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #c9eb6e;
+  background-color: #5e5ceb6e;
   border: 1px solid #ddd;
   border-radius: 8px;
 `;
@@ -42,15 +42,19 @@ export const Select = styled.select`
 `;
 
 export const Button = styled.button`
+width: 100%;
+font-weight: 600;
+
   padding: 10px 20px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #50dd86;
+  color: #050b1b;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
     background-color: #0056b3;
+    color: #c7cbd3;
   }
 `;
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import db from '../../services/firestore';
 import {
   FormContainer,
@@ -33,7 +34,7 @@ const ReceiptForm = () => {
   const [enderecoOrigem, setEnderecoOrigem] = useState('');
   const [enderecoDestino, setEnderecoDestino] = useState('');
   const [message, setMessage] = useState('');
-
+  const navigate = useNavigate();
   const auth = getAuth();
 
   const handleFieldChange = (setter) => (e) => {
@@ -97,7 +98,9 @@ const ReceiptForm = () => {
       });
 
       console.log('Recibo salvo com ID:', docRef.id);
+      const idDoc = docRef.id
       setMessage('Recibo gerado com sucesso!');
+      navigate(`/receipt/${idDoc}`);
       resetForm();
     } catch (error) {
       console.error('Erro ao gerar recibo:', error);
@@ -148,7 +151,7 @@ const ReceiptForm = () => {
         <FormGroup>
           <Label>Documento do Cliente</Label>
           <Input
-            type="text"
+            type="number"
             value={documentoCliente}
             onChange={handleFieldChange(setDocumentoCliente)}
           />
@@ -166,7 +169,7 @@ const ReceiptForm = () => {
         <FormGroup>
           <Label>Documento da Empresa</Label>
           <Input
-            type="text"
+              type="number"
             value={documentoEmpresa}
             onChange={handleFieldChange(setDocumentoEmpresa)}
           />
@@ -184,7 +187,7 @@ const ReceiptForm = () => {
         <FormGroup>
           <Label>Valor</Label>
           <Input
-            type="text"
+            type="number"
             value={valor}
             onChange={handleFieldChange(setValor)}
           />
@@ -220,7 +223,7 @@ const ReceiptForm = () => {
         <FormGroup>
           <Label>Documento do Motorista</Label>
           <Input
-            type="text"
+             type="number"
             value={documentoMotorista}
             onChange={handleFieldChange(setDocumentoMotorista)}
           />
