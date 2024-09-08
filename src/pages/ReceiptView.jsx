@@ -12,7 +12,7 @@ const ReceiptContainer = styled.div`
   border: 1px solid #2e2727;
   border-radius: 4px;
   font-family: 'Courier New', Courier, monospace;
-  background:  #cbdb34dd;
+  background:  #deeb68dd;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   margin:0 auto;
   text-align: center;
